@@ -37,15 +37,7 @@ export default function MockExamPage() {
   const [showNavigator, setShowNavigator] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // 中断セッションの復元
-  useEffect(() => {
-    const saved = loadMockExamSession();
-    if (saved) {
-      setSession(saved);
-      setRemainingSeconds(calcRemainingSeconds(saved));
-      setPhase("exam");
-    }
-  }, []);
+  // 中断セッションがある場合はintroで「再開する」ボタンを表示するのみ（自動切り替えしない）
 
   // タイマー
   useEffect(() => {
@@ -205,11 +197,20 @@ export default function MockExamPage() {
     <div className="flex flex-col h-screen">
       {/* ヘッダー */}
       <div className={`flex items-center justify-between px-4 py-3 border-b ${isTimeWarning ? "bg-red-50 border-red-200" : "bg-white border-gray-100"}`}>
-        <div className="text-center">
-          <p className={`text-lg font-bold font-mono tabular-nums ${isTimeWarning ? "text-red-600" : "text-gray-800"}`}>
-            {isTimeWarning && "⏰ "}残り {formatTime(remainingSeconds)}
-          </p>
-        </div>
+        <button
+          onClick={() => {
+            if (confirm("試験を中断してメニューに戻りますか？\n（進捗は保存されています）")) {
+              if (timerRef.current) clearInterval(timerRef.current);
+              setPhase("intro");
+            }
+          }}
+          className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1"
+        >
+          ✕ 中断
+        </button>
+        <p className={`text-lg font-bold font-mono tabular-nums ${isTimeWarning ? "text-red-600" : "text-gray-800"}`}>
+          {isTimeWarning && "⏰ "}残り {formatTime(remainingSeconds)}
+        </p>
         <div className="text-right text-xs text-gray-500">
           <p>回答済 {answeredCount}/{session.questions.length}</p>
         </div>
