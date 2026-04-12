@@ -1,0 +1,171 @@
+/**
+ * 模擬試験ロジック
+ * 合否判定・カテゴリ別スコア計算・問題配分
+ */
+
+import type {
+  Question,
+  QuestionCategory,
+  MockExamSession,
+  MockExamResult,
+} from "@/types";
+import { CATEGORY_QUESTION_COUNT } from "@/types";
+
+const PASS_RATE_TOTAL = 0.7;         // 総合合格ライン 70%
+const PASS_RATE_CATEGORY = 0.35;     // カテゴリ別合格ライン 35%
+const DEFAULT_TIME_LIMIT = 7200;     // 120分（秒）
+
+const MOCK_EXAM_KEY = "toritsugi_mock_exam";
+
+/**
+ * 問題プールからカテゴリ配分に従って模擬試験用問題を選択する
+ */
+export function buildMockExamQuestions(allQuestions: Question[]): Question[] {
+  const result: Question[] = [];
+
+  for (const [category, count] of Object.entries(CATEGORY_QUESTION_COUNT)) {
+    const pool = allQuestions
+      .filter((q) => q.category === (category as QuestionCategory))
+      .sort(() => Math.random() - 0.5); // シャッフル
+
+    // 問題が足りない場合は繰り返して補う
+    const selected: Question[] = [];
+    for (let i = 0; i < count; i++) {
+      selected.push(pool[i % pool.length]);
+    }
+    result.push(...selected);
+  }
+
+  return result;
+}
+
+/**
+ * 模擬試験セッションを開始する
+ */
+export function startMockExam(questions: Question[]): MockExamSession {
+  const session: MockExamSession = {
+    questions,
+    answers: new Array(questions.length).fill(null),
+    startedAt: new Date().toISOString(),
+    timeLimitSeconds: DEFAULT_TIME_LIMIT,
+    isFinished: false,
+  };
+  saveMockExamSession(session);
+  return session;
+}
+
+/**
+ * 解答を記録する
+ */
+export function recordAnswer(
+  session: MockExamSession,
+  questionIndex: number,
+  answerIndex: number
+): MockExamSession {
+  const answers = [...session.answers];
+  answers[questionIndex] = answerIndex;
+  const updated = { ...session, answers };
+  saveMockExamSession(updated);
+  return updated;
+}
+
+/**
+ * 模擬試験を採点する
+ */
+export function scoreMockExam(session: MockExamSession): MockExamResult {
+  const { questions, answers, startedAt } = session;
+  const now = new Date();
+  const durationSeconds = Math.floor(
+    (now.getTime() - new Date(startedAt).getTime()) / 1000
+  );
+
+  // カテゴリ別スコアを初期化
+  const categoryScores = {} as MockExamResult["categoryScores"];
+  for (const cat of Object.keys(CATEGORY_QUESTION_COUNT) as QuestionCategory[]) {
+    categoryScores[cat] = { score: 0, possible: 0 };
+  }
+
+  let totalScore = 0;
+  const wrongQuestionIds: string[] = [];
+
+  questions.forEach((q, i) => {
+    const cat = q.category;
+    if (!categoryScores[cat]) {
+      categoryScores[cat] = { score: 0, possible: 0 };
+    }
+    categoryScores[cat].possible += 1;
+
+    const isCorrect = answers[i] === q.correctIndex;
+    if (isCorrect) {
+      totalScore += 1;
+      categoryScores[cat].score += 1;
+    } else {
+      wrongQuestionIds.push(q.id);
+    }
+  });
+
+  // 合否判定
+  const totalPossible = questions.length;
+  const passedTotal = totalScore / totalPossible >= PASS_RATE_TOTAL;
+  const passedAllCategories = Object.values(categoryScores).every(
+    ({ score, possible }) => possible === 0 || score / possible >= PASS_RATE_CATEGORY
+  );
+  const isPassed = passedTotal && passedAllCategories;
+
+  return {
+    totalScore,
+    totalPossible,
+    isPassed,
+    categoryScores,
+    wrongQuestionIds,
+    durationSeconds,
+    date: now.toISOString(),
+  };
+}
+
+/**
+ * 残り時間（秒）を計算する
+ */
+export function calcRemainingSeconds(session: MockExamSession): number {
+  const elapsed = Math.floor(
+    (Date.now() - new Date(session.startedAt).getTime()) / 1000
+  );
+  return Math.max(0, session.timeLimitSeconds - elapsed);
+}
+
+/**
+ * 残り時間を MM:SS 形式にフォーマット
+ */
+export function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+// ===== 永続化 =====
+export function saveMockExamSession(session: MockExamSession): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(MOCK_EXAM_KEY, JSON.stringify(session));
+}
+
+export function loadMockExamSession(): MockExamSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(MOCK_EXAM_KEY);
+    if (!raw) return null;
+    const session = JSON.parse(raw) as MockExamSession;
+    if (session.isFinished) return null; // 終了済みは読み込まない
+    return session;
+  } catch {
+    return null;
+  }
+}
+
+export function clearMockExamSession(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(MOCK_EXAM_KEY);
+}

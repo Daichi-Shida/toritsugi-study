@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply text-gray-800;
+  }
+}
+
+@layer components {
+  /* ボタン基底スタイル */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold
+           text-base transition-all duration-150 active:scale-95
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    min-height: 44px; /* タップターゲット確保 */
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-500 text-white shadow-lg shadow-primary-200
+           hover:bg-primary-600 active:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply btn bg-white text-primary-600 border-2 border-primary-200
+           hover:bg-primary-50;
+  }
+
+  /* カード */
+  .card {
+    @apply bg-white rounded-3xl shadow-sm border border-gray-100 p-5;
+  }
+
+  /* 選択肢ボタン */
+  .option-btn {
+    @apply w-full text-left rounded-2xl border-2 px-4 py-3 font-medium
+           transition-all duration-150;
+    min-height: 56px;
+  }
+  .option-btn:active {
+    transform: scale(0.98);
+  }
+
+  .option-btn-default {
+    @apply option-btn border-gray-200 bg-white hover:border-primary-300 hover:bg-primary-50;
+  }
+
+  .option-btn-correct {
+    @apply option-btn border-success bg-green-50 text-green-800;
+  }
+
+  .option-btn-wrong {
+    @apply option-btn border-error bg-red-50 text-red-800;
+  }
+}
+
