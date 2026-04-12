@@ -10,8 +10,9 @@ import { scoreMockExam, clearMockExamSession } from "@/lib/mockExam";
 import allQuestions from "@/data/questions/all.json";
 import seigoQuestions from "@/data/questions/seigo_sample.json";
 import qualityQuestions from "@/data/questions/quality_questions.json";
+import plumeriaQuestions from "@/data/questions/plumeria_questions.json";
 
-const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions, ...qualityQuestions] as Question[];
+const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions, ...qualityQuestions, ...plumeriaQuestions] as Question[];
 
 // 選択肢インデックスから表示テキストを返す
 function getAnswerLabel(q: Question, index: number): string {
