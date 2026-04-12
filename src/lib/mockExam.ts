@@ -14,40 +14,60 @@ import { CATEGORY_QUESTION_COUNT } from "@/types";
 const PASS_RATE_TOTAL = 0.7;         // 総合合格ライン 70%
 const PASS_RATE_CATEGORY = 0.35;     // カテゴリ別合格ライン 35%
 const DEFAULT_TIME_LIMIT = 7200;     // 120分（秒）
+const QUICK_TIME_LIMIT = 1800;       // 30分（秒）
+
+// クイック模擬試験の章別出題数（通常の1/4）
+const QUICK_CATEGORY_QUESTION_COUNT: Record<QuestionCategory, number> = {
+  "医薬品に共通する特性と基本的な知識": 5,
+  "人体の働きと医薬品": 5,
+  "主な医薬品とその作用": 10,
+  "薬事関係法規・制度": 5,
+  "医薬品の適正使用・安全対策": 5,
+};
 
 const MOCK_EXAM_KEY = "toritsugi_mock_exam";
 
 /**
  * 問題プールからカテゴリ配分に従って模擬試験用問題を選択する
  */
-export function buildMockExamQuestions(allQuestions: Question[]): Question[] {
+function buildQuestions(
+  allQuestions: Question[],
+  countMap: Record<QuestionCategory, number>
+): Question[] {
   const result: Question[] = [];
-
-  for (const [category, count] of Object.entries(CATEGORY_QUESTION_COUNT)) {
+  for (const [category, count] of Object.entries(countMap)) {
     const pool = allQuestions
       .filter((q) => q.category === (category as QuestionCategory))
-      .sort(() => Math.random() - 0.5); // シャッフル
-
-    // 問題が足りない場合は繰り返して補う
+      .sort(() => Math.random() - 0.5);
     const selected: Question[] = [];
     for (let i = 0; i < count; i++) {
       selected.push(pool[i % pool.length]);
     }
     result.push(...selected);
   }
-
   return result;
+}
+
+export function buildMockExamQuestions(allQuestions: Question[]): Question[] {
+  return buildQuestions(allQuestions, CATEGORY_QUESTION_COUNT);
+}
+
+export function buildQuickMockExamQuestions(allQuestions: Question[]): Question[] {
+  return buildQuestions(allQuestions, QUICK_CATEGORY_QUESTION_COUNT);
 }
 
 /**
  * 模擬試験セッションを開始する
  */
-export function startMockExam(questions: Question[]): MockExamSession {
+export function startMockExam(
+  questions: Question[],
+  isQuick = false
+): MockExamSession {
   const session: MockExamSession = {
     questions,
     answers: new Array(questions.length).fill(null),
     startedAt: new Date().toISOString(),
-    timeLimitSeconds: DEFAULT_TIME_LIMIT,
+    timeLimitSeconds: isQuick ? QUICK_TIME_LIMIT : DEFAULT_TIME_LIMIT,
     isFinished: false,
   };
   saveMockExamSession(session);

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { MockExamSession, Question } from "@/types";
 import {
   buildMockExamQuestions,
+  buildQuickMockExamQuestions,
   startMockExam,
   recordAnswer,
   scoreMockExam,
@@ -58,9 +59,11 @@ export default function MockExamPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, session?.startedAt]);
 
-  const handleStart = useCallback(() => {
-    const questions = buildMockExamQuestions(ALL_QUESTIONS);
-    const newSession = startMockExam(questions);
+  const handleStart = useCallback((quick = false) => {
+    const questions = quick
+      ? buildQuickMockExamQuestions(ALL_QUESTIONS)
+      : buildMockExamQuestions(ALL_QUESTIONS);
+    const newSession = startMockExam(questions, quick);
     setSession(newSession);
     setRemainingSeconds(newSession.timeLimitSeconds);
     setCurrentIndex(0);
@@ -106,8 +109,32 @@ export default function MockExamPage() {
           <p className="text-sm text-gray-500 mt-1">本番と同じ形式で実力を確認しよう</p>
         </header>
 
+        {/* クイック模擬試験 */}
+        <div className="card border-orange-200 bg-orange-50">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">⚡</span>
+            <h2 className="font-bold text-orange-800">クイック模擬試験</h2>
+          </div>
+          <ul className="text-sm text-orange-700 space-y-1 mb-3">
+            <li className="flex gap-2"><span>📄</span><span>30問（各章1/4）</span></li>
+            <li className="flex gap-2"><span>⏱️</span><span>制限時間：30分</span></li>
+            <li className="flex gap-2"><span>✅</span><span>合格基準：同じ（総合70%・各章35%）</span></li>
+          </ul>
+          <div className="text-xs text-orange-600 mb-3">
+            <div className="flex justify-between"><span>第1章・第2章・第4章・第5章</span><span className="font-bold">各5問</span></div>
+            <div className="flex justify-between"><span>第3章</span><span className="font-bold">10問</span></div>
+          </div>
+          <button onClick={() => handleStart(true)} className="w-full rounded-2xl bg-orange-500 text-white font-bold py-3 hover:bg-orange-600 active:scale-95 transition-all">
+            クイック試験を開始する ⚡
+          </button>
+        </div>
+
+        {/* 本番模擬試験 */}
         <div className="card flex flex-col gap-3">
-          <h2 className="font-bold text-gray-800">試験について</h2>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">📝</span>
+            <h2 className="font-bold text-gray-800">本番模擬試験</h2>
+          </div>
           <ul className="text-sm text-gray-600 space-y-2">
             <li className="flex gap-2"><span>📄</span><span>問題数：{ALL_QUESTIONS.length >= 120 ? "120" : ALL_QUESTIONS.length}問（5章構成）</span></li>
             <li className="flex gap-2"><span>⏱️</span><span>制限時間：120分</span></li>
@@ -115,22 +142,15 @@ export default function MockExamPage() {
             <li className="flex gap-2"><span>🔕</span><span>試験中は正解・不正解は表示されません</span></li>
             <li className="flex gap-2"><span>💾</span><span>途中でアプリを閉じても再開できます</span></li>
           </ul>
-        </div>
-
-        <div className="card bg-primary-50 border-primary-200">
-          <p className="text-sm font-bold text-primary-800 mb-1">章別出題数</p>
-          <div className="text-sm text-primary-700 space-y-1">
-            <div className="flex justify-between"><span>第1章 医薬品に共通する特性と基本的な知識</span><span className="font-bold">20問</span></div>
-            <div className="flex justify-between"><span>第2章 人体の働きと医薬品</span><span className="font-bold">20問</span></div>
-            <div className="flex justify-between"><span>第3章 主な医薬品とその作用</span><span className="font-bold">40問</span></div>
-            <div className="flex justify-between"><span>第4章 薬事関係法規・制度</span><span className="font-bold">20問</span></div>
-            <div className="flex justify-between"><span>第5章 医薬品の適正使用・安全対策</span><span className="font-bold">20問</span></div>
+          <div className="text-xs text-primary-700 space-y-1 bg-primary-50 rounded-2xl p-3">
+            <div className="flex justify-between"><span>第1章・第2章・第4章・第5章</span><span className="font-bold">各20問</span></div>
+            <div className="flex justify-between"><span>第3章</span><span className="font-bold">40問</span></div>
           </div>
         </div>
 
         <div className="flex flex-col gap-3">
-          <button onClick={handleStart} className="btn-primary w-full text-lg py-4">
-            試験を開始する →
+          <button onClick={() => handleStart(false)} className="btn-primary w-full text-lg py-4">
+            本番試験を開始する →
           </button>
           {resumable && (
             <button
