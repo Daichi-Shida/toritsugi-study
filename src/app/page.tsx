@@ -39,7 +39,7 @@ export default function HomePage() {
         章別に学習する 📖
       </Link>
       <Link href="/mock-exam" className="btn-secondary w-full text-center">
-        本番模擬試験（120分）📝
+        模擬試験を受ける 📝
       </Link>
       <Link href="/stats" className="btn-secondary w-full text-center">
         学習状況を見る 📊
