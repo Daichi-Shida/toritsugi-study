@@ -9,8 +9,9 @@ import { CATEGORY_CHAPTER } from "@/types";
 import { scoreMockExam, clearMockExamSession } from "@/lib/mockExam";
 import allQuestions from "@/data/questions/all.json";
 import seigoQuestions from "@/data/questions/seigo_sample.json";
+import qualityQuestions from "@/data/questions/quality_questions.json";
 
-const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions] as Question[];
+const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions, ...qualityQuestions] as Question[];
 
 // 選択肢インデックスから表示テキストを返す
 function getAnswerLabel(q: Question, index: number): string {

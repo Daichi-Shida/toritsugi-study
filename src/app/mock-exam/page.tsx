@@ -19,10 +19,11 @@ import { loadProgress, saveProgress } from "@/lib/storage";
 import { updateRecord } from "@/lib/srs";
 import allQuestions from "@/data/questions/all.json";
 import seigoQuestions from "@/data/questions/seigo_sample.json";
+import qualityQuestions from "@/data/questions/quality_questions.json";
 import QuestionNavigator from "@/components/mock/QuestionNavigator";
 import type { SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion } from "@/types";
 
-const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions] as Question[];
+const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions, ...qualityQuestions] as Question[];
 
 type Phase = "intro" | "exam" | "confirm-submit";
 
