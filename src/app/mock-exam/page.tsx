@@ -344,7 +344,7 @@ export default function MockExamPage() {
       </div>
 
       {/* 下部ナビゲーション */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/75 backdrop-blur-xl border-t border-cream-200 px-4 py-3 flex items-center gap-2 shadow-soft">
+      <div className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md bg-white/75 backdrop-blur-xl border-t border-cream-200 px-4 py-3 flex items-center gap-2 shadow-soft">
         <button
           onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
           disabled={currentIndex === 0}

@@ -90,7 +90,7 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 260, damping: 28 }}
-            className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 flex flex-col"
+            className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md z-40 flex flex-col"
             style={{ maxHeight: "calc(100dvh - 64px)" }}
           >
             <div
