@@ -9,7 +9,7 @@ import { loadProgress, saveProgress, addSession, toggleBookmark } from "@/lib/st
 import { updateRecord, getDueQuestionIds } from "@/lib/srs";
 import { calcExperience, calcPassExpectation, updateCharacter } from "@/lib/score";
 import QuizCard from "@/components/quiz/QuizCard";
-import ResultScreen from "@/components/quiz/ResultScreen";
+import ResultSheet from "@/components/quiz/ResultSheet";
 import SessionComplete from "@/components/quiz/SessionComplete";
 import Confetti from "@/components/effects/Confetti";
 import ExpFloater from "@/components/effects/ExpFloater";
@@ -241,16 +241,16 @@ function QuizContent() {
 
       <QuizCard question={currentQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={handleAnswer} />
 
-      {isAnswered && (
-        <ResultScreen
-          question={currentQuestion}
-          selectedIndex={selectedIndex!}
-          onNext={handleNext}
-          isLast={currentIndex + 1 >= queue.length}
-          isBookmarked={isBookmarked}
-          onToggleBookmark={handleToggleBookmark}
-        />
-      )}
+      <ResultSheet
+        show={isAnswered}
+        question={currentQuestion}
+        selectedIndex={selectedIndex ?? 0}
+        onNext={handleNext}
+        isLast={currentIndex + 1 >= queue.length}
+        isBookmarked={isBookmarked}
+        onToggleBookmark={handleToggleBookmark}
+        characterStage={progress.character.stage}
+      />
 
       {/* ── 演出オーバーレイ ── */}
       <Confetti show={showConfetti} count={32} tone={progress.character.stage >= 6 ? "rainbow" : "gold"} />
