@@ -5,6 +5,7 @@ import qualityQuestions from "./quality_questions.json";
 import plumeriaQuestions from "./plumeria_questions.json";
 import r8RevisionQuestions from "./r8_revision_questions.json";
 import r8DeepQuestions from "./r8_deep_questions.json";
+import plumeriaV2Questions from "./plumeria_v2_questions.json";
 
 export const ALL_QUESTIONS: Question[] = [
   ...allQuestions,
@@ -13,6 +14,7 @@ export const ALL_QUESTIONS: Question[] = [
   ...plumeriaQuestions,
   ...r8RevisionQuestions,
   ...r8DeepQuestions,
+  ...plumeriaV2Questions,
 ] as Question[];
 
 export const QUESTION_BY_ID: Record<string, Question> = ALL_QUESTIONS.reduce(

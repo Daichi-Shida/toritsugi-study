@@ -26,6 +26,7 @@ FILES = [
     "plumeria_questions.json",
     "r8_revision_questions.json",
     "r8_deep_questions.json",
+    "plumeria_v2_questions.json",
 ]
 
 VALID_CATEGORIES = {
