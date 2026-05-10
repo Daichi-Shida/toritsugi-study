@@ -36,9 +36,25 @@
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-bold
            text-base transition-all duration-200 active:scale-[0.97]
-           disabled:opacity-50 disabled:cursor-not-allowed select-none;
+           disabled:opacity-50 disabled:cursor-not-allowed select-none
+           relative overflow-hidden;
     min-height: 48px;
     letter-spacing: 0.02em;
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.5) 0%, transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    pointer-events: none;
+  }
+  .btn:active::before {
+    transform: scale(2.5);
+    opacity: 1;
+    transition: transform 0s, opacity 0s;
   }
 
   .btn-primary {
@@ -149,6 +165,53 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     @apply animate-shimmer;
+  }
+
+  /* ───────── プログレスバー上を流れるハイライト ───────── */
+  .progress-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 0%,
+      transparent 35%,
+      rgba(255, 255, 255, 0.55) 50%,
+      transparent 65%,
+      transparent 100%
+    );
+    background-size: 250% 100%;
+    animation: shimmerSweep 2.6s linear infinite;
+  }
+
+  @keyframes shimmerSweep {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ───────── タップ波紋（ボタン共通で使える） ───────── */
+  .ripple-on-tap {
+    position: relative;
+    overflow: hidden;
+  }
+  .ripple-on-tap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.45) 0%, transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    pointer-events: none;
+  }
+  .ripple-on-tap:active::before {
+    transform: scale(2.5);
+    opacity: 1;
+    transition: transform 0s, opacity 0s;
   }
 }
 

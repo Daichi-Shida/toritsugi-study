@@ -25,18 +25,31 @@ function optionClass(i: number, correctIndex: number, selectedIndex: number | nu
 function SimpleSelectOptions({ question, selectedIndex, isAnswered, onAnswer }: { question: SimpleSelectQuestion } & Omit<Props, "question">) {
   return (
     <div className="flex flex-col gap-2.5">
-      {question.options.map((option, i) => (
-        <motion.button
-          key={i}
-          className={optionClass(i, question.correctIndex, selectedIndex, isAnswered)}
-          onClick={() => onAnswer(i)}
-          disabled={isAnswered}
-          whileTap={!isAnswered ? { scale: 0.98 } : {}}
-        >
-          <span className="font-bold text-primary-500 mr-2.5 tracking-wide">{["A", "B", "C", "D", "E"][i]}.</span>
-          <span className="leading-relaxed">{option}</span>
-        </motion.button>
-      ))}
+      {question.options.map((option, i) => {
+        const isWrongPick = isAnswered && i === selectedIndex && i !== question.correctIndex;
+        const isCorrectPick = isAnswered && i === question.correctIndex;
+        return (
+          <motion.button
+            key={i}
+            className={optionClass(i, question.correctIndex, selectedIndex, isAnswered)}
+            onClick={() => onAnswer(i)}
+            disabled={isAnswered}
+            whileTap={!isAnswered ? { scale: 0.97 } : {}}
+            whileHover={!isAnswered ? { scale: 1.01 } : {}}
+            animate={
+              isWrongPick
+                ? { x: [0, -10, 10, -8, 6, -3, 0] }
+                : isCorrectPick
+                ? { scale: [1, 1.04, 1] }
+                : {}
+            }
+            transition={isWrongPick ? { duration: 0.5 } : { duration: 0.4 }}
+          >
+            <span className="font-bold text-primary-500 mr-2.5 tracking-wide">{["A", "B", "C", "D", "E"][i]}.</span>
+            <span className="leading-relaxed">{option}</span>
+          </motion.button>
+        );
+      })}
     </div>
   );
 }
@@ -120,9 +133,10 @@ export default function QuizCard({ question, selectedIndex, isAnswered, onAnswer
   return (
     <motion.div
       key={question.id}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, y: 24, rotateX: -12, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 220, damping: 22 }}
+      style={{ perspective: 800, transformStyle: "preserve-3d" }}
       className="card flex flex-col gap-4"
     >
       {/* メタ情報 */}

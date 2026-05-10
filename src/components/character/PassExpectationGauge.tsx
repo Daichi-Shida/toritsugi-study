@@ -30,7 +30,7 @@ export default function PassExpectationGauge({ value }: Props) {
 
       <div className="relative h-5 rounded-full overflow-hidden bg-cream-100/70 border border-cream-200">
         <motion.div
-          className={`absolute inset-y-0 left-0 bg-gradient-to-r ${colorClass} rounded-full`}
+          className={`absolute inset-y-0 left-0 bg-gradient-to-r ${colorClass} rounded-full progress-shine`}
           initial={{ width: 0 }}
           animate={{ width: `${value}%` }}
           transition={{ duration: 1.1, ease: "easeOut", delay: 0.2 }}

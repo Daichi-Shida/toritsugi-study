@@ -11,8 +11,12 @@ import { calcExperience, calcPassExpectation, updateCharacter } from "@/lib/scor
 import QuizCard from "@/components/quiz/QuizCard";
 import ResultScreen from "@/components/quiz/ResultScreen";
 import SessionComplete from "@/components/quiz/SessionComplete";
+import Confetti from "@/components/effects/Confetti";
+import ExpFloater from "@/components/effects/ExpFloater";
+import LevelUpModal from "@/components/effects/LevelUpModal";
 import { ALL_QUESTIONS } from "@/data/questions";
 import { shuffleQuestion } from "@/lib/shuffle";
+import type { CharacterStage } from "@/types";
 
 const SESSION_SIZE = 10;
 
@@ -36,6 +40,13 @@ function QuizContent() {
   const sessionStartRef = useRef<number>(Date.now());
   const sessionCategoriesRef = useRef<Set<QuestionCategory>>(new Set());
   const sessionSavedRef = useRef(false);
+
+  // 演出用
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiKey, setConfettiKey] = useState(0);
+  const [floatExp, setFloatExp] = useState<number | null>(null);
+  const [floatKey, setFloatKey] = useState(0);
+  const [levelUp, setLevelUp] = useState<{ from: CharacterStage; to: CharacterStage; toName: string } | null>(null);
 
   useEffect(() => {
     const p = loadProgress();
@@ -108,6 +119,26 @@ function QuizContent() {
       const newProgress: UserProgress = { ...progress, questionRecords: newRecords, character: newCharacter };
       setProgress(newProgress);
       saveProgress(newProgress);
+
+      // ── 演出 ──
+      if (isCorrect) {
+        setShowConfetti(true);
+        setConfettiKey((k) => k + 1);
+        setTimeout(() => setShowConfetti(false), 2200);
+      }
+      if (exp > 0) {
+        setFloatExp(exp);
+        setFloatKey((k) => k + 1);
+        setTimeout(() => setFloatExp(null), 1600);
+      }
+      // レベルアップ検知
+      if (newCharacter.stage > progress.character.stage) {
+        setLevelUp({
+          from: progress.character.stage,
+          to: newCharacter.stage,
+          toName: newCharacter.name,
+        });
+      }
     },
     [isAnswered, currentQuestion, progress]
   );
@@ -199,7 +230,7 @@ function QuizContent() {
       <div className="flex items-center gap-3">
         <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-cream-100/80 border border-cream-200">
           <motion.div
-            className="h-full bg-gradient-to-r from-primary-300 via-primary-400 to-primary-600 rounded-full"
+            className="h-full bg-gradient-to-r from-primary-300 via-primary-400 to-primary-600 rounded-full progress-shine"
             initial={false}
             animate={{ width: `${(currentIndex / queue.length) * 100}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
@@ -220,6 +251,17 @@ function QuizContent() {
           onToggleBookmark={handleToggleBookmark}
         />
       )}
+
+      {/* ── 演出オーバーレイ ── */}
+      <Confetti show={showConfetti} count={32} tone={progress.character.stage >= 6 ? "rainbow" : "gold"} />
+      <ExpFloater exp={floatExp} triggerKey={floatKey} />
+      <LevelUpModal
+        show={!!levelUp}
+        fromStage={levelUp?.from ?? 1}
+        toStage={levelUp?.to ?? 1}
+        toName={levelUp?.toName ?? ""}
+        onClose={() => setLevelUp(null)}
+      />
     </div>
   );
 }

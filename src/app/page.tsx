@@ -8,6 +8,7 @@ import { calcStreakDays } from "@/lib/score";
 import type { UserProgress } from "@/types";
 import CharacterDisplay from "@/components/character/CharacterDisplay";
 import PassExpectationGauge from "@/components/character/PassExpectationGauge";
+import CountUp from "@/components/effects/CountUp";
 
 const menuItems = [
   { href: "/quiz",                label: "問題を解く",       sub: "今日の10問でレベルアップ", emoji: "✏️", primary: true  },
@@ -148,9 +149,11 @@ export default function HomePage() {
 
 function StatTile({ label, value, unit, big = false }: { label: string; value: number; unit: string; big?: boolean }) {
   return (
-    <div className={`card-flat ${big ? "py-3 px-5 min-w-[112px]" : "py-2.5 px-2 text-center"}`}>
-      <p className={`headline font-bold text-mocha-800 ${big ? "text-3xl" : "text-2xl"} leading-none`}>
-        {value}<span className="text-xs ml-0.5 text-mocha-500 font-normal">{unit}</span>
+    <div className={`card-flat ${big ? "py-3 px-5 min-w-[112px]" : "py-2.5 px-2 text-center"} relative overflow-hidden`}>
+      <div className={`absolute -top-4 -right-4 w-12 h-12 rounded-full bg-gradient-rose-gold opacity-15 blur-xl`} />
+      <p className={`headline font-bold text-mocha-800 ${big ? "text-3xl" : "text-2xl"} leading-none tabular-nums`}>
+        <CountUp value={value} />
+        <span className="text-xs ml-0.5 text-mocha-500 font-normal">{unit}</span>
       </p>
       <p className={`${big ? "text-[10px] mt-1.5" : "text-[10px] mt-1"} tracking-[0.18em] text-mocha-500 uppercase`}>
         {label}
