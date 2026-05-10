@@ -15,7 +15,6 @@ interface Props {
   isLast: boolean;
   isBookmarked?: boolean;
   onToggleBookmark?: () => void;
-  /** 現在のキャラステージ（キャラ画像と吹き出しトーンに反映） */
   characterStage: CharacterStage;
 }
 
@@ -23,16 +22,100 @@ const STAGE_EMOJI: Record<number, string> = {
   1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️",
 };
 
-function CharacterAvatar({ stage, isCorrect }: { stage: CharacterStage; isCorrect: boolean }) {
-  // キャラ反応：正解→嬉しそうにジャンプ、不正解→おじぎ風に上下
-  const animation = isCorrect
-    ? { y: [0, -10, 0, -6, 0], rotate: [0, -6, 6, -3, 0] }
-    : { y: [0, 4, 0], rotate: [0, -3, 3, 0] };
+// ───── 動きパターン（共通・各5種類） ─────
+type MoveSpec = {
+  y?: number[];
+  x?: number[];
+  rotate?: number[];
+  scale?: number[];
+  duration: number;
+};
 
-  const inner = (
+const CORRECT_MOVES: MoveSpec[] = [
+  // 1. 大ジャンプ＋微回転
+  { y: [0, -28, 0, -14, 0], rotate: [0, -8, 8, -4, 0], duration: 1.4 },
+  // 2. ぐるりと一回転
+  { y: [0, -10, 0], rotate: [0, 360], duration: 1.2 },
+  // 3. ぴょこぴょこ多段
+  { y: [0, -10, 0, -8, 0, -6, 0], duration: 1.4 },
+  // 4. 拡大しながら浮上
+  { y: [0, -16, 0], scale: [1, 1.15, 1], duration: 1.2 },
+  // 5. 横揺れ歓喜
+  { x: [0, -8, 8, -6, 6, 0], y: [0, -8, 0, -4, 0], rotate: [0, -6, 6, -3, 0], duration: 1.4 },
+];
+
+const WRONG_MOVES: MoveSpec[] = [
+  // 1. 横揺れ（ぶるぶる）
+  { x: [0, -10, 10, -8, 8, -4, 0], duration: 0.8 },
+  // 2. 沈み込み
+  { y: [0, 6, 4, 8, 4], scale: [1, 0.95, 0.92, 0.95, 0.95], duration: 1.2 },
+  // 3. お辞儀
+  { rotate: [0, -25, -15, -25, -10], y: [0, 4, 2, 4, 2], duration: 1.2 },
+  // 4. 縮こまる
+  { scale: [1, 0.85, 0.92, 0.85, 0.9], y: [0, 4, 2, 4, 4], duration: 1.2 },
+  // 5. ふらふら倒れ風
+  { rotate: [0, -15, 15, -10, 10, -5, 0], duration: 1.0 },
+];
+
+// ───── ステージ別セリフ（各5種類×2） ─────
+const LINES: Record<CharacterStage, { correct: string[]; wrong: string[] }> = {
+  1: {
+    correct: ["ぷりぷり！", "やったね〜豆", "豆まき気分🫘", "すくすく〜！", "豆パワー全開！"],
+    wrong:   ["ふんが〜...", "豆っちゃった", "お水ちょうだい...", "にがい...", "うぅ〜"],
+  },
+  2: {
+    correct: ["光合成〜！", "つるん！", "葉っぱピーン", "ぐんぐん伸びる", "新緑きらめく✨"],
+    wrong:   ["萎れちゃう...", "お水ちょうだい", "元気ない...", "うぅ...", "がんばる..."],
+  },
+  3: {
+    correct: ["ふわっ✨", "きれいに咲いた！", "いい香り〜🌸", "春爛漫", "ひらり"],
+    wrong:   ["ぽろり...", "花弁が...", "もう一度咲く", "ちょっと萎れた", "うぅ..."],
+  },
+  4: {
+    correct: ["ねっとり〜", "ほっくほく！", "もちもち", "煮物にして", "さといもパワー"],
+    wrong:   ["ぬるん...", "滑った...", "皮むけちゃう", "おいも涙", "ぐにゃり..."],
+  },
+  5: {
+    correct: ["やった〜！", "よくできました！", "さすが✨", "いい感じ！", "一緒にがんばろう"],
+    wrong:   ["次があるよ", "ドンマイ", "もう一度！", "大丈夫だよ", "落ち込まないで"],
+  },
+  6: {
+    // 大人メアリー（FBI）：希望／破壊の英単語
+    correct: ["HOPE", "FAITH", "VICTORY", "GLORY", "ASCEND"],
+    wrong:   ["DESTRUCTION", "DESPAIR", "DARKNESS", "VOID", "RUIN"],
+  },
+  7: {
+    // 侍メアリー：意味不明な語感
+    correct: ["うまみ。。", "腹ペコ侍！", "太郎侍参上", "寿司食いたし", "侘び寂び正解"],
+    wrong:   ["ねむみ。。。", "かわたい", "闇の刻", "侍ロス", "もぐもぐ虚無"],
+  },
+};
+
+const HEADER: Record<"correct" | "wrong", Record<CharacterStage, string>> = {
+  correct: { 1: "✦ 正解！", 2: "✦ 正解！", 3: "✦ 正解！", 4: "✦ 正解！", 5: "✦ 正解！", 6: "✦ CORRECT", 7: "✦ 見事なり！" },
+  wrong:   { 1: "もう一歩…", 2: "もう一歩…", 3: "もう一歩…", 4: "もう一歩…", 5: "もう一歩…", 6: "INCORRECT", 7: "未熟者…" },
+};
+
+// ハッシュ関数（question.id + selectedIndex から決定的にランダム選択）
+function hashPick(seed: string, max: number): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h) % max;
+}
+
+function CharacterAvatar({ stage, move }: { stage: CharacterStage; move: MoveSpec }) {
+  const animate: Record<string, number[]> = {};
+  if (move.y) animate.y = move.y;
+  if (move.x) animate.x = move.x;
+  if (move.rotate) animate.rotate = move.rotate;
+  if (move.scale) animate.scale = move.scale;
+
+  return (
     <motion.div
-      animate={animation}
-      transition={{ duration: 1.4, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.4 }}
+      animate={animate}
+      transition={{ duration: move.duration, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.6 }}
       style={{ transformOrigin: "50% 80%" }}
     >
       {stage === 7 ? <SamuraiCharacter size={64} /> :
@@ -42,39 +125,28 @@ function CharacterAvatar({ stage, isCorrect }: { stage: CharacterStage; isCorrec
        <span className="text-5xl leading-none">{STAGE_EMOJI[stage]}</span>}
     </motion.div>
   );
-  return inner;
-}
-
-function speech(isCorrect: boolean, stage: CharacterStage): string {
-  if (isCorrect) {
-    if (stage === 7) return "見事なり！";
-    if (stage === 6) return "Excellent.";
-    if (stage === 5) return "やったー！";
-    if (stage === 4) return "ねっとり正解🥔";
-    if (stage === 3) return "きれいに咲いた🌸";
-    if (stage === 2) return "すくすく！🌱";
-    return "やった〜！";
-  } else {
-    if (stage === 7) return "次なる稽古を…";
-    if (stage === 6) return "Don't worry.";
-    if (stage === 5) return "次があるよ！";
-    if (stage === 4) return "もう一度…🥔";
-    if (stage === 3) return "あと少し！";
-    if (stage === 2) return "がんばって！";
-    return "ドンマイ！";
-  }
 }
 
 export default function ResultSheet({ show, question, selectedIndex, onNext, isLast, isBookmarked, onToggleBookmark, characterStage }: Props) {
   const isCorrect = selectedIndex === question.correctIndex;
   const qType = question.type ?? "simple_select";
-  const msg = speech(isCorrect, characterStage);
+
+  // ランダム選択：question.id + selectedIndex でシード
+  const seed = `${question.id}_${selectedIndex}`;
+  const moveIndex = hashPick(seed, 5);
+  const lineIndex = hashPick(seed + "_line", 5);
+
+  const move = (isCorrect ? CORRECT_MOVES : WRONG_MOVES)[moveIndex];
+  const speechLine = LINES[characterStage][isCorrect ? "correct" : "wrong"][lineIndex];
+  const headerText = HEADER[isCorrect ? "correct" : "wrong"][characterStage];
+
+  // 大人メアリー（Lv6）の英単語表現はちょっと大きく見せる
+  const isFBI = characterStage === 6;
 
   return (
     <AnimatePresence>
       {show && (
         <>
-          {/* バックドロップ：解説シート背後を少し暗く */}
           <motion.div
             aria-hidden
             initial={{ opacity: 0 }}
@@ -84,7 +156,6 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
             className="fixed inset-0 z-30 bg-mocha-900/15 backdrop-blur-[2px] pointer-events-none"
           />
 
-          {/* シート本体 */}
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -101,14 +172,12 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                   : "linear-gradient(180deg, rgba(255, 224, 220, 0.92) 0%, rgba(255, 252, 246, 0.95) 18%, rgba(255, 252, 246, 0.97) 100%)",
               }}
             >
-              {/* グラブハンドル */}
               <div className="flex justify-center pt-2 pb-1 shrink-0">
                 <div className="w-10 h-1 rounded-full bg-mocha-300/60" />
               </div>
 
               {/* ヘッダー：キャラ + 吹き出し */}
               <div className="px-5 pt-1 pb-3 flex items-end gap-3 shrink-0">
-                {/* キャラ */}
                 <motion.div
                   initial={{ x: -80, scale: 0.6, opacity: 0, rotate: -25 }}
                   animate={{ x: 0, scale: 1, opacity: 1, rotate: 0 }}
@@ -116,15 +185,14 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                   className="shrink-0"
                   style={{ width: 64, height: 64 }}
                 >
-                  <CharacterAvatar stage={characterStage} isCorrect={isCorrect} />
+                  <CharacterAvatar stage={characterStage} move={move} />
                 </motion.div>
 
-                {/* 吹き出し */}
                 <motion.div
                   initial={{ x: -10, opacity: 0, scale: 0.85 }}
                   animate={{ x: 0, opacity: 1, scale: 1 }}
                   transition={{ delay: 0.25, type: "spring", stiffness: 220, damping: 18 }}
-                  className="relative flex-1 mb-1"
+                  className="relative flex-1 mb-1 min-w-0"
                 >
                   <div
                     className={`relative rounded-2xl px-4 py-2 inline-block max-w-full font-bold ${
@@ -133,9 +201,14 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                         : "bg-gradient-to-br from-rose-50 to-rose-100 border-2 border-rose-300 text-rose-700"
                     }`}
                   >
-                    <span className="text-base tracking-wide">{isCorrect ? "✦ 正解！" : "もう一歩…"}</span>
-                    <span className="block text-xs font-medium mt-0.5 tracking-wide opacity-80">{msg}</span>
-                    {/* 吹き出しのしっぽ */}
+                    <span className="text-base tracking-wide">{headerText}</span>
+                    <span
+                      className={`block font-bold mt-0.5 break-words ${
+                        isFBI ? "text-lg tracking-[0.25em] uppercase" : "text-xs tracking-wide opacity-85"
+                      }`}
+                    >
+                      {speechLine}
+                    </span>
                     <span
                       className={`absolute -left-2 bottom-3 w-3 h-3 ${
                         isCorrect ? "bg-emerald-50 border-emerald-300" : "bg-rose-50 border-rose-300"
@@ -145,9 +218,7 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                 </motion.div>
               </div>
 
-              {/* スクロール可能領域：解説 */}
               <div className="flex-1 overflow-y-auto px-5 pb-3 scrollbar-thin">
-                {/* 正誤組み合わせ型の場合のみ表示 */}
                 {qType === "seigo_combination" && (() => {
                   const q = question as SeigoCombinationQuestion;
                   const correctCombo = q.seigo_options[q.correctIndex];
@@ -174,7 +245,6 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                   );
                 })()}
 
-                {/* 解説 */}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -186,7 +256,6 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                 </motion.div>
               </div>
 
-              {/* 固定フッター：ボタン */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
