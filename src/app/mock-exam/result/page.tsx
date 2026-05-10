@@ -62,36 +62,46 @@ export default function MockExamResultPage() {
   const categories = Object.keys(CATEGORY_CHAPTER) as QuestionCategory[];
 
   return (
-    <div className="flex flex-col gap-5 p-4 pb-8">
+    <div className="flex flex-col gap-5 p-5 pb-10">
       {/* 合否バナー */}
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 180, damping: 15 }}
-        className={`card text-center ${result.isPassed ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}
+        className="card text-center relative overflow-hidden"
       >
-        <p className="text-5xl mb-2">{result.isPassed ? "🎉" : "📚"}</p>
-        <h1 className="text-2xl font-bold mb-1">{result.isPassed ? "合格！" : "不合格"}</h1>
-        <p className="text-4xl font-bold text-gray-800 mb-1">
-          {result.totalScore}<span className="text-lg text-gray-500">/{result.totalPossible}点</span>
+        <div className={`absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl ${result.isPassed ? "bg-emerald-300/40" : "bg-rose-300/40"}`} />
+        <p className="text-[10px] font-bold tracking-[0.3em] text-mocha-500 uppercase mb-2">
+          {result.isPassed ? "Result · Pass" : "Result · Try Again"}
         </p>
-        <p className={`text-lg font-bold ${ratePercent >= 70 ? "text-green-600" : "text-red-600"}`}>
+        <p className="text-5xl mb-2">{result.isPassed ? "🎉" : "📚"}</p>
+        <h1 className={`headline text-2xl font-bold mb-2 ${result.isPassed ? "text-emerald-700" : "text-rose-700"}`}>
+          {result.isPassed ? "合格" : "不合格"}
+        </h1>
+        <p className="headline text-4xl font-bold text-mocha-800 mb-1 tabular-nums">
+          {result.totalScore}<span className="text-base text-mocha-500 font-normal">/{result.totalPossible}点</span>
+        </p>
+        <p className={`text-base font-bold tabular-nums tracking-wide ${ratePercent >= 70 ? "text-emerald-700" : "text-rose-700"}`}>
           正答率 {ratePercent}%
         </p>
-        <p className="text-sm text-gray-500 mt-2">
-          所要時間 {durationMin}分{durationSec}秒
+        <div className="hr-soft my-3" />
+        <p className="text-xs text-mocha-500 tracking-wide tabular-nums">
+          所要時間 <span className="font-bold text-mocha-700">{durationMin}分{durationSec}秒</span>
         </p>
         {!result.isPassed && ratePercent >= 70 && (
-          <p className="text-sm text-amber-600 mt-2 font-medium">
-            ⚠️ 総合点は合格基準を満たしていますが、一部の章が基準（35%）を下回っています
+          <p className="text-[11px] text-amber-700 mt-3 font-medium leading-relaxed">
+            ⚠ 総合点は合格基準を満たしていますが、一部の章が基準（35%）を下回っています
           </p>
         )}
       </motion.div>
 
       {/* 章別スコア */}
       <div className="card">
-        <h2 className="font-bold text-gray-800 mb-3">章別スコア</h2>
-        <div className="flex flex-col gap-3">
+        <div className="mb-3">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-primary-600 uppercase">By Chapter</p>
+          <h2 className="headline text-base font-bold text-mocha-800">章別スコア</h2>
+        </div>
+        <div className="flex flex-col gap-3.5">
           {categories.map((cat) => {
             const s = result.categoryScores[cat];
             if (!s) return null;
@@ -99,29 +109,27 @@ export default function MockExamResultPage() {
             const isPassed = rate >= 0.35;
             return (
               <div key={cat}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs text-gray-600 flex-1">
-                    <span className="font-bold text-primary-600 mr-1">{CATEGORY_CHAPTER[cat]}</span>
-                    {cat}
-                  </span>
-                  <span className={`text-sm font-bold ml-2 ${isPassed ? "text-green-600" : "text-red-600"}`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="badge badge-gold">{CATEGORY_CHAPTER[cat]}</span>
+                  <span className="text-[11px] text-mocha-500 truncate flex-1">{cat}</span>
+                  <span className={`text-sm font-bold tabular-nums ${isPassed ? "text-emerald-700" : "text-rose-600"}`}>
                     {s.score}/{s.possible}
-                    {!isPassed && " ⚠️"}
+                    {!isPassed && " ⚠"}
                   </span>
                 </div>
-                <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2.5 rounded-full overflow-hidden bg-cream-100/80 border border-cream-200">
                   <motion.div
-                    className={`h-full rounded-full ${isPassed ? "bg-green-400" : "bg-red-400"}`}
+                    className={`h-full rounded-full bg-gradient-to-r ${isPassed ? "from-emerald-300 to-emerald-500" : "from-rose-300 to-rose-500"}`}
                     initial={{ width: 0 }}
                     animate={{ width: `${rate * 100}%` }}
-                    transition={{ duration: 0.8, delay: 0.1 }}
+                    transition={{ duration: 0.7, delay: 0.1 }}
                   />
                 </div>
               </div>
             );
           })}
         </div>
-        <p className="text-xs text-gray-400 mt-3">※ 各章の合格基準：35%以上</p>
+        <p className="text-[10px] text-mocha-400 mt-3 tracking-wide">※ 各章の合格基準：35%以上</p>
       </div>
 
       {/* 間違えた問題レビュー */}
@@ -129,27 +137,31 @@ export default function MockExamResultPage() {
         <div className="card">
           <button
             onClick={() => setShowReview(!showReview)}
-            className="w-full flex justify-between items-center font-bold text-gray-800"
+            className="w-full flex justify-between items-center"
           >
-            <span>間違えた問題（{wrongEntries.length}問）</span>
-            <span className="text-gray-400">{showReview ? "▲" : "▼"}</span>
+            <div className="text-left">
+              <p className="text-[10px] font-bold tracking-[0.2em] text-primary-600 uppercase">Review</p>
+              <h2 className="headline font-bold text-mocha-800 text-base">間違えた問題 <span className="text-mocha-500 font-normal text-sm">（{wrongEntries.length}問）</span></h2>
+            </div>
+            <span className="text-mocha-400 text-sm">{showReview ? "▲" : "▼"}</span>
           </button>
 
           {showReview && (
             <div className="mt-3 flex flex-col gap-4">
               {wrongEntries.map(({ q, i, ans }) => (
-                <div key={i} className="border-t border-gray-100 pt-3">
-                  <p className="text-xs text-primary-600 font-medium mb-1">
-                    {CATEGORY_CHAPTER[q.category]} {q.category}
+                <div key={i} className="border-t border-cream-200/60 pt-3 first:border-t-0 first:pt-0">
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <span className="badge badge-cream">{CATEGORY_CHAPTER[q.category]}</span>
+                    <span className="text-[10px] text-mocha-400 tracking-wide">問{i + 1}</span>
+                  </div>
+                  <p className="text-sm font-medium text-mocha-800 mb-2 leading-relaxed">{q.text}</p>
+                  <p className="text-[11px] text-rose-600 mb-1">
+                    <span className="font-bold tracking-wide">あなたの答え：</span>{ans !== null ? getAnswerLabel(q, ans) : "未回答"}
                   </p>
-                  <p className="text-sm font-medium text-gray-800 mb-2">問{i + 1}. {q.text}</p>
-                  <p className="text-xs text-red-600 mb-1">
-                    あなたの答え：{ans !== null ? getAnswerLabel(q, ans) : "未回答"}
+                  <p className="text-[11px] text-emerald-700 mb-2">
+                    <span className="font-bold tracking-wide">正解：</span>{getAnswerLabel(q, q.correctIndex)}
                   </p>
-                  <p className="text-xs text-green-700 mb-2">
-                    正解：{getAnswerLabel(q, q.correctIndex)}
-                  </p>
-                  <p className="text-xs text-gray-600 bg-gray-50 rounded-xl p-3 leading-relaxed">
+                  <p className="text-[11px] text-mocha-700 bg-cream-50/80 border border-cream-200 rounded-xl p-3 leading-relaxed">
                     {q.explanation}
                   </p>
                 </div>
@@ -160,14 +172,14 @@ export default function MockExamResultPage() {
       )}
 
       {/* アクション */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         <Link href="/mock-exam" className="btn-primary w-full text-center">
           もう一度受験する
         </Link>
         <Link href="/quiz?mode=weak" className="btn-secondary w-full text-center">
-          弱点を集中学習する 🎯
+          弱点を集中学習する
         </Link>
-        <Link href="/" className="btn-secondary w-full text-center">
+        <Link href="/" className="btn-ghost w-full text-center">
           ホームに戻る
         </Link>
       </div>

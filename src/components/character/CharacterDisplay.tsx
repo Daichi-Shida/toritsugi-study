@@ -32,13 +32,13 @@ const STAGE_DESC: Record<number, string> = {
 };
 
 const STAGE_COLOR: Record<number, string> = {
-  1: "from-green-300 to-green-500",
+  1: "from-green-300 to-emerald-500",
   2: "from-lime-300 to-green-400",
-  3: "from-pink-300 to-rose-400",
-  4: "from-yellow-400 to-amber-500",
-  5: "from-purple-400 to-fuchsia-500",
-  6: "from-amber-300 via-yellow-200 to-yellow-400",
-  7: "from-indigo-500 via-purple-500 to-fuchsia-500",
+  3: "from-rose-200 to-rose-400",
+  4: "from-primary-300 to-primary-500",
+  5: "from-primary-300 via-primary-400 to-primary-600",
+  6: "from-amber-200 via-primary-300 to-primary-500",
+  7: "from-mocha-400 via-primary-500 to-mocha-700",
 };
 
 // レアキャラ（Lv6/7）にだけ重ねるキラキラ演出
@@ -161,17 +161,19 @@ export default function CharacterDisplay({ character }: Props) {
       </div>
 
       {/* ステータス */}
-      <div className="flex-1">
-        <p className="font-bold text-gray-800">{character.name}</p>
-        <p className={`text-xs mb-1 ${isRare ? "font-bold tracking-wider " + (character.stage === 6 ? "text-amber-600" : "text-fuchsia-600") : "text-gray-500"}`}>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline gap-2 mb-0.5">
+          <p className="headline font-bold text-mocha-800 text-base truncate">{character.name}</p>
+          <span className="text-[10px] tracking-[0.18em] text-mocha-400 uppercase shrink-0">
+            Lv.{character.stage}
+          </span>
+        </div>
+        <p className={`text-xs mb-2 ${isRare ? "font-bold tracking-[0.15em] " + (character.stage === 6 ? "text-primary-700" : "text-mocha-700") : "text-mocha-500"}`}>
           {desc}
-        </p>
-        <p className="text-xs text-gray-400 mb-2">
-          Lv.{character.stage} / EXP: {character.experience}
         </p>
 
         {/* 経験値バー */}
-        <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden">
+        <div className="relative h-2.5 rounded-full overflow-hidden bg-cream-100/80 border border-cream-200">
           <motion.div
             className={`absolute inset-y-0 left-0 bg-gradient-to-r ${barColor} rounded-full`}
             initial={{ width: 0 }}
@@ -179,7 +181,7 @@ export default function CharacterDisplay({ character }: Props) {
             transition={{ duration: 0.8, ease: "easeOut" }}
           />
         </div>
-        <p className="text-xs text-gray-400 mt-1 text-right">
+        <p className="text-[10px] text-mocha-400 mt-1 text-right tracking-wide">
           {isMax ? "MAX" : `${character.experience} / ${character.nextLevelExp} EXP`}
         </p>
       </div>

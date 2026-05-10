@@ -38,62 +38,57 @@ export default function ChaptersPage() {
   function getCategoryStats(cat: QuestionCategory) {
     const catQuestions = ALL_QUESTIONS.filter((q) => q.category === cat);
     const total = catQuestions.length;
-    if (!progress) return { attempted: 0, correct: 0, total, rate: null, untouched: total };
+    if (!progress) return { attempted: 0, correct: 0, total, rate: null };
     let attempted = 0;
     let correct = 0;
     for (const q of catQuestions) {
       const r = progress.questionRecords[q.id];
       if (r && r.totalAttempts > 0) {
         attempted++;
-        // 直近正答率の代わりに通算正答率を使う
         if (r.correctAttempts / r.totalAttempts >= 0.5) correct++;
       }
     }
     const rate = attempted > 0 ? Math.round((correct / attempted) * 100) : null;
-    return { attempted, correct, total, rate, untouched: total - attempted };
+    return { attempted, correct, total, rate };
   }
 
-  function getRateColor(rate: number | null) {
-    if (rate === null) return "bg-gray-200";
-    if (rate >= 80) return "bg-green-400";
-    if (rate >= 60) return "bg-primary-400";
-    if (rate >= 40) return "bg-amber-400";
-    return "bg-red-400";
+  function getRateBg(rate: number | null) {
+    if (rate === null) return "from-cream-100 to-cream-200";
+    if (rate >= 80) return "from-emerald-300 to-emerald-500";
+    if (rate >= 60) return "from-primary-300 to-primary-500";
+    if (rate >= 40) return "from-amber-300 to-amber-500";
+    return "from-rose-300 to-rose-500";
   }
 
   const bookmarkCount = progress?.bookmarkedIds.length ?? 0;
 
   return (
-    <div className="flex flex-col gap-4 p-4 pb-8">
-      <header className="pt-4 flex items-center gap-3">
-        <button onClick={() => router.push("/")} className="text-gray-400 text-lg">←</button>
+    <div className="flex flex-col gap-5 p-5 pb-10">
+      <header className="pt-5 flex items-center gap-3">
+        <button onClick={() => router.push("/")} className="w-9 h-9 rounded-full bg-white/60 backdrop-blur-md border border-white/70 flex items-center justify-center text-mocha-500 hover:text-mocha-800" aria-label="戻る">←</button>
         <div>
-          <h1 className="text-xl font-bold text-primary-700">章別学習</h1>
-          <p className="text-sm text-gray-500">苦手な章を集中して攻略しよう</p>
+          <p className="text-[10px] font-bold tracking-[0.3em] text-primary-600 uppercase">Chapters</p>
+          <h1 className="headline text-xl font-bold text-mocha-800">章別学習</h1>
         </div>
       </header>
 
-      {/* 見直しリスト導線 */}
       <Link
         href="/quiz?mode=bookmark"
-        className={`card flex items-center gap-3 active:scale-[0.98] transition-transform ${
-          bookmarkCount > 0 ? "bg-amber-50 border-amber-200" : "opacity-70"
-        }`}
+        className={`card flex items-center gap-3 active:scale-[0.98] transition-transform ${bookmarkCount > 0 ? "" : "opacity-70"}`}
       >
-        <div className="text-2xl">⭐</div>
+        <div className="w-12 h-12 rounded-2xl bg-gradient-rose-gold flex items-center justify-center text-2xl shadow-glow-soft">⭐</div>
         <div className="flex-1">
-          <p className="font-bold text-gray-800 text-sm">見直しリスト</p>
-          <p className="text-xs text-gray-500">
-            {bookmarkCount > 0 ? `${bookmarkCount}問を復習する` : "問題画面で⭐を付けて保存"}
+          <p className="font-bold text-mocha-800 text-sm">見直しリスト</p>
+          <p className="text-[11px] text-mocha-500 mt-0.5">
+            {bookmarkCount > 0 ? `${bookmarkCount}問をもう一度確認する` : "問題画面で⭐を付けて保存"}
           </p>
         </div>
-        {bookmarkCount > 0 && <div className="text-amber-500 text-lg">›</div>}
+        {bookmarkCount > 0 && <div className="text-primary-500 text-lg">›</div>}
       </Link>
 
       <div className="flex flex-col gap-3">
         {CATEGORIES.map((cat, idx) => {
           const stats = getCategoryStats(cat);
-          const rateColor = getRateColor(stats.rate);
           const examCount = CATEGORY_QUESTION_COUNT[cat];
           const coverage = stats.total > 0 ? Math.round((stats.attempted / stats.total) * 100) : 0;
 
@@ -106,44 +101,48 @@ export default function ChaptersPage() {
             >
               <Link
                 href={`/quiz?chapter=${encodeURIComponent(cat)}`}
-                className="card flex gap-4 items-start active:scale-[0.98] transition-transform"
+                className="card flex gap-4 items-start active:scale-[0.98] transition-transform group"
               >
-                <div className="text-3xl mt-1">{CHAPTER_EMOJI[cat]}</div>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cream-50 to-cream-200 border border-cream-200 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
+                  {CHAPTER_EMOJI[cat]}
+                </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs font-bold text-primary-500">{CATEGORY_CHAPTER[cat]}</span>
-                    <span className="text-xs text-gray-400">試験 {examCount}問</span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="badge badge-gold">{CATEGORY_CHAPTER[cat]}</span>
+                    <span className="text-[10px] text-mocha-400 tracking-wide">試験 {examCount}問</span>
                   </div>
-                  <p className="font-bold text-gray-800 text-sm leading-snug mb-1">{cat}</p>
-                  <p className="text-xs text-gray-500 mb-2">{CATEGORY_DESCRIPTION[cat]}</p>
+                  <p className="font-bold text-mocha-800 text-sm leading-snug mb-1">{cat}</p>
+                  <p className="text-[11px] text-mocha-500 mb-2.5 leading-relaxed">{CATEGORY_DESCRIPTION[cat]}</p>
 
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${rateColor}`}
-                        style={{ width: stats.rate !== null ? `${stats.rate}%` : "0%" }}
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="flex-1 h-2 rounded-full overflow-hidden bg-cream-100/80 border border-cream-200">
+                      <motion.div
+                        className={`h-full rounded-full bg-gradient-to-r ${getRateBg(stats.rate)}`}
+                        initial={{ width: 0 }}
+                        animate={{ width: stats.rate !== null ? `${stats.rate}%` : "0%" }}
+                        transition={{ duration: 0.6, delay: 0.05 + idx * 0.05 }}
                       />
                     </div>
-                    <span className="text-xs font-bold text-gray-500 w-12 text-right">
-                      {stats.rate !== null ? `${stats.rate}%` : "未学習"}
+                    <span className="text-xs font-bold text-mocha-700 w-12 text-right tabular-nums">
+                      {stats.rate !== null ? `${stats.rate}%` : "—"}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-[10px] text-mocha-400 tracking-wide">
                     {stats.attempted > 0
-                      ? `解答済 ${stats.attempted}/${stats.total}問（カバー率 ${coverage}%）`
+                      ? `解答 ${stats.attempted}/${stats.total}（カバー率 ${coverage}%）`
                       : `未学習 ${stats.total}問`}
                   </p>
                 </div>
-                <div className="text-gray-300 text-lg self-center">›</div>
+                <div className="text-mocha-300 text-lg self-center group-hover:text-primary-500 transition-colors">›</div>
               </Link>
             </motion.div>
           );
         })}
       </div>
 
-      <div className="card bg-amber-50 border-amber-200 text-sm text-amber-800">
-        <p className="font-bold mb-1">💡 効率的な学習のヒント</p>
-        <p>正答率が低い章から優先して取り組みましょう。各章の合格基準は<span className="font-bold">35%以上</span>です。</p>
+      <div className="card-flat bg-gradient-to-br from-primary-50/80 to-cream-50/80 border-primary-200/50 text-sm text-mocha-700 mt-2">
+        <p className="font-bold mb-1 text-mocha-800">💡 効率的な学習のヒント</p>
+        <p className="text-xs leading-relaxed">正答率が低い章から優先して取り組みましょう。各章の合格基準は<span className="font-bold text-primary-700">35%以上</span>です。</p>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import type { Question, UserProgress, QuestionCategory, StudySession } from "@/types";
 import { CATEGORY_CHAPTER } from "@/types";
 import { loadProgress, saveProgress, addSession, toggleBookmark } from "@/lib/storage";
@@ -168,7 +169,7 @@ function QuizContent() {
   }
 
   if (!currentQuestion || !progress) {
-    return <div className="flex items-center justify-center h-64"><p className="text-gray-500">読み込み中...</p></div>;
+    return <div className="flex items-center justify-center h-64"><p className="text-mocha-400 text-sm tracking-wide">読み込み中...</p></div>;
   }
 
   const modeLabel = isBookmarkMode
@@ -180,13 +181,15 @@ function QuizContent() {
   const isBookmarked = progress.bookmarkedIds.includes(currentQuestion.id);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center gap-3">
-        <button onClick={() => router.back()} className="text-gray-400 text-lg shrink-0">←</button>
-        <p className="text-xs font-medium text-primary-600 truncate flex-1">{modeLabel}</p>
+    <div className="flex flex-col gap-4 p-5 pb-8">
+      <div className="flex items-center gap-3 pt-3">
+        <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-white/60 backdrop-blur-md border border-white/70 flex items-center justify-center text-mocha-500 hover:text-mocha-800 transition-colors shrink-0" aria-label="戻る">
+          ←
+        </button>
+        <p className="text-[10px] font-bold tracking-[0.2em] text-primary-600 uppercase truncate flex-1">{modeLabel}</p>
         <button
           onClick={handleToggleBookmark}
-          className={`shrink-0 text-xl transition-transform active:scale-90 ${isBookmarked ? "text-amber-400" : "text-gray-300 hover:text-amber-300"}`}
+          className={`shrink-0 w-9 h-9 rounded-full backdrop-blur-md border transition-all active:scale-90 flex items-center justify-center ${isBookmarked ? "bg-gradient-to-br from-primary-200 to-primary-300 border-primary-400 text-primary-900" : "bg-white/60 border-white/70 text-mocha-300 hover:text-primary-500"}`}
           aria-label={isBookmarked ? "見直しリストから外す" : "見直しリストに追加"}
         >
           {isBookmarked ? "★" : "☆"}
@@ -194,13 +197,15 @@ function QuizContent() {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary-400 rounded-full transition-all duration-300"
-            style={{ width: `${(currentIndex / queue.length) * 100}%` }}
+        <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-cream-100/80 border border-cream-200">
+          <motion.div
+            className="h-full bg-gradient-to-r from-primary-300 via-primary-400 to-primary-600 rounded-full"
+            initial={false}
+            animate={{ width: `${(currentIndex / queue.length) * 100}%` }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
-        <span className="text-sm text-gray-500 whitespace-nowrap">{currentIndex + 1} / {queue.length}</span>
+        <span className="text-xs text-mocha-500 whitespace-nowrap font-bold tracking-wide">{currentIndex + 1} / {queue.length}</span>
       </div>
 
       <QuizCard question={currentQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={handleAnswer} />
