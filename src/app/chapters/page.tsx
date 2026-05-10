@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import type { QuestionCategory, UserProgress, Question } from "@/types";
+import type { QuestionCategory, UserProgress } from "@/types";
 import { CATEGORY_CHAPTER, CATEGORY_QUESTION_COUNT } from "@/types";
 import { loadProgress } from "@/lib/storage";
-import sampleQuestions from "@/data/questions/all.json";
-
-const ALL_QUESTIONS = sampleQuestions as Question[];
+import { ALL_QUESTIONS } from "@/data/questions";
 
 const CATEGORY_DESCRIPTION: Record<QuestionCategory, string> = {
   "医薬品に共通する特性と基本的な知識": "医薬品の定義・リスク評価・セルフメディケーション",
@@ -38,20 +36,21 @@ export default function ChaptersPage() {
   }, []);
 
   function getCategoryStats(cat: QuestionCategory) {
-    if (!progress) return { attempted: 0, correct: 0, total: 0, rate: null };
     const catQuestions = ALL_QUESTIONS.filter((q) => q.category === cat);
     const total = catQuestions.length;
+    if (!progress) return { attempted: 0, correct: 0, total, rate: null, untouched: total };
     let attempted = 0;
     let correct = 0;
     for (const q of catQuestions) {
       const r = progress.questionRecords[q.id];
-      if (r) {
+      if (r && r.totalAttempts > 0) {
         attempted++;
-        correct += r.correctAttempts;
+        // 直近正答率の代わりに通算正答率を使う
+        if (r.correctAttempts / r.totalAttempts >= 0.5) correct++;
       }
     }
     const rate = attempted > 0 ? Math.round((correct / attempted) * 100) : null;
-    return { attempted, correct, total, rate };
+    return { attempted, correct, total, rate, untouched: total - attempted };
   }
 
   function getRateColor(rate: number | null) {
@@ -61,6 +60,8 @@ export default function ChaptersPage() {
     if (rate >= 40) return "bg-amber-400";
     return "bg-red-400";
   }
+
+  const bookmarkCount = progress?.bookmarkedIds.length ?? 0;
 
   return (
     <div className="flex flex-col gap-4 p-4 pb-8">
@@ -72,11 +73,29 @@ export default function ChaptersPage() {
         </div>
       </header>
 
+      {/* 見直しリスト導線 */}
+      <Link
+        href="/quiz?mode=bookmark"
+        className={`card flex items-center gap-3 active:scale-[0.98] transition-transform ${
+          bookmarkCount > 0 ? "bg-amber-50 border-amber-200" : "opacity-70"
+        }`}
+      >
+        <div className="text-2xl">⭐</div>
+        <div className="flex-1">
+          <p className="font-bold text-gray-800 text-sm">見直しリスト</p>
+          <p className="text-xs text-gray-500">
+            {bookmarkCount > 0 ? `${bookmarkCount}問を復習する` : "問題画面で⭐を付けて保存"}
+          </p>
+        </div>
+        {bookmarkCount > 0 && <div className="text-amber-500 text-lg">›</div>}
+      </Link>
+
       <div className="flex flex-col gap-3">
         {CATEGORIES.map((cat, idx) => {
           const stats = getCategoryStats(cat);
           const rateColor = getRateColor(stats.rate);
           const examCount = CATEGORY_QUESTION_COUNT[cat];
+          const coverage = stats.total > 0 ? Math.round((stats.attempted / stats.total) * 100) : 0;
 
           return (
             <motion.div
@@ -98,7 +117,6 @@ export default function ChaptersPage() {
                   <p className="font-bold text-gray-800 text-sm leading-snug mb-1">{cat}</p>
                   <p className="text-xs text-gray-500 mb-2">{CATEGORY_DESCRIPTION[cat]}</p>
 
-                  {/* 進捗バー */}
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div
@@ -112,8 +130,8 @@ export default function ChaptersPage() {
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
                     {stats.attempted > 0
-                      ? `${stats.attempted}問解答済（データ ${stats.total}問中）`
-                      : `データ ${stats.total}問`}
+                      ? `解答済 ${stats.attempted}/${stats.total}問（カバー率 ${coverage}%）`
+                      : `未学習 ${stats.total}問`}
                   </p>
                 </div>
                 <div className="text-gray-300 text-lg self-center">›</div>

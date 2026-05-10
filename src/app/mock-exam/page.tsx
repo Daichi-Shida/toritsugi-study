@@ -2,29 +2,23 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import type { MockExamSession, Question } from "@/types";
+import type { MockExamSession, StudySession, QuestionCategory } from "@/types";
+import { CATEGORY_CHAPTER } from "@/types";
 import {
   buildMockExamQuestions,
   buildQuickMockExamQuestions,
   startMockExam,
   recordAnswer,
-  scoreMockExam,
   calcRemainingSeconds,
   formatTime,
   loadMockExamSession,
-  clearMockExamSession,
   saveMockExamSession,
 } from "@/lib/mockExam";
-import { loadProgress, saveProgress } from "@/lib/storage";
+import { loadProgress, saveProgress, addSession } from "@/lib/storage";
 import { updateRecord } from "@/lib/srs";
-import allQuestions from "@/data/questions/all.json";
-import seigoQuestions from "@/data/questions/seigo_sample.json";
-import qualityQuestions from "@/data/questions/quality_questions.json";
-import plumeriaQuestions from "@/data/questions/plumeria_questions.json";
+import { ALL_QUESTIONS } from "@/data/questions";
 import QuestionNavigator from "@/components/mock/QuestionNavigator";
 import type { SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion } from "@/types";
-
-const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions, ...qualityQuestions, ...plumeriaQuestions] as Question[];
 
 type Phase = "intro" | "exam" | "confirm-submit";
 
@@ -77,19 +71,34 @@ export default function MockExamPage() {
 
     // SRS記録に反映
     const progress = loadProgress();
-    let newRecords = { ...progress.questionRecords };
+    const newRecords = { ...progress.questionRecords };
+    let correctCount = 0;
+    const categoriesSet = new Set<QuestionCategory>();
     target.questions.forEach((q, i) => {
       const isCorrect = target.answers[i] === q.correctIndex;
+      if (isCorrect) correctCount++;
+      categoriesSet.add(q.category);
       const existing = newRecords[q.id] ?? null;
       newRecords[q.id] = updateRecord(existing, q.id, isCorrect);
     });
-    saveProgress({ ...progress, questionRecords: newRecords });
+
+    const elapsedSec = Math.max(
+      1,
+      Math.floor((Date.now() - new Date(target.startedAt).getTime()) / 1000)
+    );
+    const studySession: StudySession = {
+      date: new Date().toISOString(),
+      questionsAnswered: target.questions.length,
+      correctCount,
+      durationSeconds: elapsedSec,
+      categoriesStudied: Array.from(categoriesSet),
+    };
+    saveProgress(addSession({ ...progress, questionRecords: newRecords }, studySession));
 
     // セッションを終了済みにして保存
     const finished = { ...target, isFinished: true };
     saveMockExamSession(finished);
 
-    // 結果をクエリパラメータ経由で渡す（実際はlocalStorageから読む）
     router.push("/mock-exam/result");
   }, [session, router]);
 
@@ -130,7 +139,7 @@ export default function MockExamPage() {
             <h2 className="font-bold text-gray-800">本番模擬試験</h2>
           </div>
           <ul className="text-sm text-gray-600 space-y-2">
-            <li className="flex gap-2"><span>📄</span><span>問題数：{ALL_QUESTIONS.length >= 120 ? "120" : ALL_QUESTIONS.length}問（5章構成）</span></li>
+            <li className="flex gap-2"><span>📄</span><span>問題数：120問（5章構成）</span></li>
             <li className="flex gap-2"><span>⏱️</span><span>制限時間：120分</span></li>
             <li className="flex gap-2"><span>✅</span><span>合格基準：総合70%以上 かつ 各章35%以上</span></li>
             <li className="flex gap-2"><span>🔕</span><span>試験中は正解・不正解は表示されません</span></li>
@@ -218,11 +227,12 @@ export default function MockExamPage() {
 
       {/* 問題エリア（スクロール可） */}
       <div className="flex-1 overflow-y-auto p-4 pb-24">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xs bg-primary-100 text-primary-700 rounded-full px-3 py-1 font-medium">
-            {q.category.slice(0, 4)}...
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <span className="text-xs bg-primary-100 text-primary-700 rounded-full px-3 py-1 font-bold">
+            {CATEGORY_CHAPTER[q.category]}
           </span>
-          <span className="text-sm text-gray-500">問題 {currentIndex + 1} / {session.questions.length}</span>
+          <span className="text-xs text-gray-500 truncate">{q.category}</span>
+          <span className="text-sm text-gray-500 ml-auto">問題 {currentIndex + 1} / {session.questions.length}</span>
         </div>
 
         <p className="text-base font-medium leading-relaxed text-gray-800 mb-4">{q.text}</p>

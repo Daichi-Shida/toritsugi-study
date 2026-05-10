@@ -110,6 +110,7 @@ export interface UserProgress {
   sessions: StudySession[];
   character: CharacterStatus;
   totalStudyDays: number;
+  bookmarkedIds: string[];
   createdAt: string;
   updatedAt: string;
 }

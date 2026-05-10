@@ -7,12 +7,7 @@ import Link from "next/link";
 import type { MockExamResult, MockExamSession, Question, QuestionCategory, SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion } from "@/types";
 import { CATEGORY_CHAPTER } from "@/types";
 import { scoreMockExam, clearMockExamSession } from "@/lib/mockExam";
-import allQuestions from "@/data/questions/all.json";
-import seigoQuestions from "@/data/questions/seigo_sample.json";
-import qualityQuestions from "@/data/questions/quality_questions.json";
-import plumeriaQuestions from "@/data/questions/plumeria_questions.json";
-
-const ALL_QUESTIONS = [...allQuestions, ...seigoQuestions, ...qualityQuestions, ...plumeriaQuestions] as Question[];
+import { ALL_QUESTIONS } from "@/data/questions";
 
 // 選択肢インデックスから表示テキストを返す
 function getAnswerLabel(q: Question, index: number): string {

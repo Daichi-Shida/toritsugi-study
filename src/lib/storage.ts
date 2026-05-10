@@ -19,6 +19,13 @@ export function loadProgress(): UserProgress {
     const stage = getStageFromExp(progress.character.experience);
     progress.character.stage = stage;
     progress.character.name = getStageName(stage);
+    // 後方互換: bookmarkedIds が無い古い保存を補完
+    if (!Array.isArray(progress.bookmarkedIds)) {
+      progress.bookmarkedIds = [];
+    }
+    if (!Array.isArray(progress.sessions)) {
+      progress.sessions = [];
+    }
     return progress;
   } catch {
     return createDefaultProgress();
@@ -81,7 +88,15 @@ function createDefaultProgress(): UserProgress {
     sessions: [],
     character: createInitialCharacter(),
     totalStudyDays: 0,
+    bookmarkedIds: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
+}
+
+export function toggleBookmark(progress: UserProgress, questionId: string): UserProgress {
+  const set = new Set(progress.bookmarkedIds);
+  if (set.has(questionId)) set.delete(questionId);
+  else set.add(questionId);
+  return { ...progress, bookmarkedIds: Array.from(set) };
 }
