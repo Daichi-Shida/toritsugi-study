@@ -1,4 +1,6 @@
-// HOPE — 大人メアリー（FBI女捜査官風・銀×金髪・拳銃携帯）
+// HOPE — メアリー（Lv5）が成長して大人になった姿。
+// 白髪→銀×金のプラチナブロンドへ、青い目はそのまま継承。
+// FBI女捜査官として希望(HOPE)を胸に薬の世界を守る。
 // レアキャラ：キラキラ演出はCharacterDisplay側で重ねる
 export default function AdultMaryCharacter({ size = 80 }: { size?: number }) {
   return (

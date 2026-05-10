@@ -15,7 +15,7 @@ export const STAGE_NAMES: Record<CharacterStage, string> = {
   3: "花が咲いてきた",
   4: "…さといも",
   5: "メアリー！",
-  6: "大人メアリー",
+  6: "大人になったメアリー",
   7: "侍メアリー",
 };
 
