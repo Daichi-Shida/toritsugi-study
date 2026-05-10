@@ -19,7 +19,7 @@ export const STAGE_NAMES: Record<CharacterStage, string> = {
   7: "メアリー侍",
 };
 
-const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3500, 6000]; // 各ステージに必要な経験値
+const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3000, 5000]; // 各ステージに必要な経験値
 
 /**
  * 学習記録から合格期待値（0-100）を計算する
