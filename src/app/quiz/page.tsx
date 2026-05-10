@@ -11,6 +11,7 @@ import QuizCard from "@/components/quiz/QuizCard";
 import ResultScreen from "@/components/quiz/ResultScreen";
 import SessionComplete from "@/components/quiz/SessionComplete";
 import { ALL_QUESTIONS } from "@/data/questions";
+import { shuffleQuestion } from "@/lib/shuffle";
 
 const SESSION_SIZE = 10;
 
@@ -80,7 +81,7 @@ function QuizContent() {
     }
 
     const size = Math.min(SESSION_SIZE, questions.length);
-    setQueue(questions.slice(0, size));
+    setQueue(questions.slice(0, size).map(shuffleQuestion));
   }, [isWeakMode, isBookmarkMode, chapterParam]);
 
   const currentQuestion = queue[currentIndex];

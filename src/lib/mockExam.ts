@@ -10,6 +10,7 @@ import type {
   MockExamResult,
 } from "@/types";
 import { CATEGORY_QUESTION_COUNT } from "@/types";
+import { shuffleQuestion } from "./shuffle";
 
 const PASS_RATE_TOTAL = 0.7;         // 総合合格ライン 70%
 const PASS_RATE_CATEGORY = 0.35;     // カテゴリ別合格ライン 35%
@@ -45,7 +46,7 @@ function buildQuestions(
     }
     result.push(...selected);
   }
-  return result;
+  return result.map(shuffleQuestion);
 }
 
 export function buildMockExamQuestions(allQuestions: Question[]): Question[] {

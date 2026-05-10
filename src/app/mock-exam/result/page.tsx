@@ -7,7 +7,6 @@ import Link from "next/link";
 import type { MockExamResult, MockExamSession, Question, QuestionCategory, SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion } from "@/types";
 import { CATEGORY_CHAPTER } from "@/types";
 import { scoreMockExam, clearMockExamSession } from "@/lib/mockExam";
-import { ALL_QUESTIONS } from "@/data/questions";
 
 // 選択肢インデックスから表示テキストを返す
 function getAnswerLabel(q: Question, index: number): string {
@@ -55,7 +54,10 @@ export default function MockExamResultPage() {
   const durationMin = Math.floor(result.durationSeconds / 60);
   const durationSec = result.durationSeconds % 60;
 
-  const wrongQuestions = ALL_QUESTIONS.filter((q) => result.wrongQuestionIds.includes(q.id));
+  // シャッフル後の選択肢順を保つため session.questions から取得
+  const wrongEntries = session.questions
+    .map((q, i) => ({ q, i, ans: session.answers[i] }))
+    .filter(({ q, ans }) => ans !== q.correctIndex);
 
   const categories = Object.keys(CATEGORY_CHAPTER) as QuestionCategory[];
 
@@ -123,38 +125,35 @@ export default function MockExamResultPage() {
       </div>
 
       {/* 間違えた問題レビュー */}
-      {wrongQuestions.length > 0 && (
+      {wrongEntries.length > 0 && (
         <div className="card">
           <button
             onClick={() => setShowReview(!showReview)}
             className="w-full flex justify-between items-center font-bold text-gray-800"
           >
-            <span>間違えた問題（{wrongQuestions.length}問）</span>
+            <span>間違えた問題（{wrongEntries.length}問）</span>
             <span className="text-gray-400">{showReview ? "▲" : "▼"}</span>
           </button>
 
           {showReview && (
             <div className="mt-3 flex flex-col gap-4">
-              {wrongQuestions.map((q, idx) => {
-                const myAnswer = session.answers[session.questions.findIndex(sq => sq.id === q.id)];
-                return (
-                  <div key={q.id} className="border-t border-gray-100 pt-3">
-                    <p className="text-xs text-primary-600 font-medium mb-1">
-                      {CATEGORY_CHAPTER[q.category]} {q.category}
-                    </p>
-                    <p className="text-sm font-medium text-gray-800 mb-2">{q.text}</p>
-                    <p className="text-xs text-red-600 mb-1">
-                      あなたの答え：{myAnswer !== null ? getAnswerLabel(q, myAnswer) : "未回答"}
-                    </p>
-                    <p className="text-xs text-green-700 mb-2">
-                      正解：{getAnswerLabel(q, q.correctIndex)}
-                    </p>
-                    <p className="text-xs text-gray-600 bg-gray-50 rounded-xl p-3 leading-relaxed">
-                      {q.explanation}
-                    </p>
-                  </div>
-                );
-              })}
+              {wrongEntries.map(({ q, i, ans }) => (
+                <div key={i} className="border-t border-gray-100 pt-3">
+                  <p className="text-xs text-primary-600 font-medium mb-1">
+                    {CATEGORY_CHAPTER[q.category]} {q.category}
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 mb-2">問{i + 1}. {q.text}</p>
+                  <p className="text-xs text-red-600 mb-1">
+                    あなたの答え：{ans !== null ? getAnswerLabel(q, ans) : "未回答"}
+                  </p>
+                  <p className="text-xs text-green-700 mb-2">
+                    正解：{getAnswerLabel(q, q.correctIndex)}
+                  </p>
+                  <p className="text-xs text-gray-600 bg-gray-50 rounded-xl p-3 leading-relaxed">
+                    {q.explanation}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </div>
