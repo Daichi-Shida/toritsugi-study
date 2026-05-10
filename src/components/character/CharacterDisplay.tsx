@@ -4,19 +4,21 @@ import { motion } from "framer-motion";
 import type { CharacterStatus } from "@/types";
 import MaryCharacter from "./MaryCharacter";
 import BeanCharacter from "./BeanCharacter";
+import AdultMaryCharacter from "./AdultMaryCharacter";
+import SamuraiCharacter from "./SamuraiCharacter";
 
 interface Props {
   character: CharacterStatus;
 }
 
-// ステージごとの絵文字（後でカスタムイラストに置き換え予定）
-// Stage5 はメアリー（イラスト差し替え時は /public/mary.png を用意して <img> に変更）
 const STAGE_EMOJI: Record<number, string> = {
   1: "🫘",
   2: "🌱",
   3: "🌸",
   4: "🥔",
   5: "👧",
+  6: "🕵️‍♀️",
+  7: "🗡️",
 };
 
 const STAGE_DESC: Record<number, string> = {
@@ -25,58 +27,145 @@ const STAGE_DESC: Record<number, string> = {
   3: "きれいな花が咲いてきた✨",
   4: "合格ライン目前…なぜかさといもに",
   5: "合格安定！メアリーに変身🌸",
+  6: "HOPE",
+  7: "はらぺこ、、、",
 };
 
-// ステージごとの経験値バーの色
 const STAGE_COLOR: Record<number, string> = {
   1: "from-green-300 to-green-500",
   2: "from-lime-300 to-green-400",
   3: "from-pink-300 to-rose-400",
   4: "from-yellow-400 to-amber-500",
   5: "from-purple-400 to-fuchsia-500",
+  6: "from-amber-300 via-yellow-200 to-yellow-400",
+  7: "from-indigo-500 via-purple-500 to-fuchsia-500",
 };
+
+// レアキャラ（Lv6/7）にだけ重ねるキラキラ演出
+function SparkleOverlay({ tone }: { tone: "gold" | "rainbow" }) {
+  const colors =
+    tone === "gold"
+      ? ["#ffe97a", "#fff5b8", "#ffd24a"]
+      : ["#a78bfa", "#f0abfc", "#fde68a"];
+  const stars = [
+    { x: 8, y: 12, size: 4, delay: 0 },
+    { x: 60, y: 6, size: 3, delay: 0.4 },
+    { x: 4, y: 50, size: 3, delay: 0.8 },
+    { x: 64, y: 56, size: 4, delay: 1.2 },
+    { x: 40, y: 2, size: 2.5, delay: 1.6 },
+    { x: 20, y: 64, size: 2.5, delay: 2.0 },
+  ];
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      {stars.map((s, i) => (
+        <motion.span
+          key={i}
+          className="absolute"
+          style={{
+            left: `${s.x}%`,
+            top: `${s.y}%`,
+            color: colors[i % colors.length],
+            fontSize: `${s.size + 6}px`,
+            textShadow: `0 0 6px ${colors[i % colors.length]}`,
+          }}
+          initial={{ opacity: 0, scale: 0.5, rotate: 0 }}
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0.4, 1.2, 0.4],
+            rotate: [0, 90, 180],
+          }}
+          transition={{
+            duration: 2.4,
+            repeat: Infinity,
+            delay: s.delay,
+            ease: "easeInOut",
+          }}
+        >
+          ✦
+        </motion.span>
+      ))}
+    </div>
+  );
+}
 
 export default function CharacterDisplay({ character }: Props) {
   const emoji = STAGE_EMOJI[character.stage] ?? "🫘";
   const desc = STAGE_DESC[character.stage] ?? "";
   const barColor = STAGE_COLOR[character.stage] ?? "from-primary-400 to-primary-600";
-  const isMax = character.stage >= 5;
+  const isMax = character.stage >= 7;
   const expProgress =
     isMax ? 1
     : character.nextLevelExp > 0
       ? Math.min(character.experience / character.nextLevelExp, 1)
       : 1;
 
+  const isRare = character.stage === 6 || character.stage === 7;
+  const sparkleTone: "gold" | "rainbow" = character.stage === 6 ? "gold" : "rainbow";
+
+  // ステージ別のレアフレーム背景
+  const rareBgClass =
+    character.stage === 6
+      ? "bg-gradient-to-br from-amber-50 via-yellow-50 to-white"
+      : character.stage === 7
+        ? "bg-gradient-to-br from-indigo-50 via-fuchsia-50 to-white"
+        : "";
+
   return (
     <div className="flex items-center gap-4">
       {/* キャラクター */}
-      <motion.div
-        key={character.stage}
-        className="select-none flex items-center justify-center"
-        style={{ width: 72, height: 72 }}
-        initial={{ scale: 0.7, rotate: -10 }}
-        animate={
-          character.stage === 4
-            ? { y: [0, -3, 0], rotate: [0, 2, -2, 0] }
-            : character.stage === 5
-            ? { y: [0, -5, 0], scale: [1, 1.04, 1] }
-            : { y: [0, -4, 0] }
-        }
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+      <div
+        className={`relative shrink-0 rounded-2xl ${isRare ? "p-2 ring-2 ring-offset-2 " + (character.stage === 6 ? "ring-amber-300 ring-offset-amber-50" : "ring-fuchsia-300 ring-offset-fuchsia-50") + " " + rareBgClass : ""}`}
+        style={{ width: isRare ? 88 : 72, height: isRare ? 88 : 72 }}
       >
-        {character.stage === 5 ? (
-          <MaryCharacter size={72} />
-        ) : character.stage === 1 ? (
-          <BeanCharacter size={72} />
-        ) : (
-          <span className="text-6xl">{emoji}</span>
+        <motion.div
+          key={character.stage}
+          className="select-none flex items-center justify-center w-full h-full"
+          initial={{ scale: 0.7, rotate: -10 }}
+          animate={
+            character.stage === 4
+              ? { y: [0, -3, 0], rotate: [0, 2, -2, 0] }
+              : character.stage === 5
+              ? { y: [0, -5, 0], scale: [1, 1.04, 1] }
+              : character.stage === 6
+              ? { y: [0, -4, 0], rotate: [0, 1, -1, 0] }
+              : character.stage === 7
+              ? { y: [0, -5, 0], scale: [1, 1.05, 1], rotate: [0, 1.5, -1.5, 0] }
+              : { y: [0, -4, 0] }
+          }
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          {character.stage === 7 ? (
+            <SamuraiCharacter size={72} />
+          ) : character.stage === 6 ? (
+            <AdultMaryCharacter size={72} />
+          ) : character.stage === 5 ? (
+            <MaryCharacter size={72} />
+          ) : character.stage === 1 ? (
+            <BeanCharacter size={72} />
+          ) : (
+            <span className="text-6xl">{emoji}</span>
+          )}
+        </motion.div>
+        {isRare && <SparkleOverlay tone={sparkleTone} />}
+        {isRare && (
+          <span
+            className={`absolute -top-1 -right-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm ${
+              character.stage === 6
+                ? "bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-900"
+                : "bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white"
+            }`}
+          >
+            ★RARE
+          </span>
         )}
-      </motion.div>
+      </div>
 
       {/* ステータス */}
       <div className="flex-1">
         <p className="font-bold text-gray-800">{character.name}</p>
-        <p className="text-xs text-gray-500 mb-1">{desc}</p>
+        <p className={`text-xs mb-1 ${isRare ? "font-bold tracking-wider " + (character.stage === 6 ? "text-amber-600" : "text-fuchsia-600") : "text-gray-500"}`}>
+          {desc}
+        </p>
         <p className="text-xs text-gray-400 mb-2">
           Lv.{character.stage} / EXP: {character.experience}
         </p>

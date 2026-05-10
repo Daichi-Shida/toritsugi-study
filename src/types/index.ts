@@ -94,7 +94,7 @@ export interface StudySession {
 }
 
 // ===== キャラクター・進捗 =====
-export type CharacterStage = 1 | 2 | 3 | 4 | 5; // 1=見習い → 5=合格確実
+export type CharacterStage = 1 | 2 | 3 | 4 | 5 | 6 | 7; // 1=見習い → 7=侍（レア）
 
 export interface CharacterStatus {
   stage: CharacterStage;

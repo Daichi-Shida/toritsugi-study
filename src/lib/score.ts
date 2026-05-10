@@ -15,9 +15,11 @@ export const STAGE_NAMES: Record<CharacterStage, string> = {
   3: "花が咲いてきた",
   4: "…さといも",
   5: "メアリー！",
+  6: "大人メアリー",
+  7: "侍メアリー",
 };
 
-const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000]; // 各ステージに必要な経験値
+const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3500, 6000]; // 各ステージに必要な経験値
 
 /**
  * 学習記録から合格期待値（0-100）を計算する
@@ -76,7 +78,7 @@ export function getStageFromExp(exp: number): CharacterStage {
       break;
     }
   }
-  return Math.min(stage, 5) as CharacterStage;
+  return Math.min(stage, 7) as CharacterStage;
 }
 
 /**
