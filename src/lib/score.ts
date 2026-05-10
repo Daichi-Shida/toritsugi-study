@@ -16,7 +16,7 @@ export const STAGE_NAMES: Record<CharacterStage, string> = {
   4: "…さといも",
   5: "メアリー！",
   6: "大人になったメアリー",
-  7: "侍メアリー",
+  7: "メアリー侍",
 };
 
 const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3500, 6000]; // 各ステージに必要な経験値

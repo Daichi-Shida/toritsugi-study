@@ -1,4 +1,4 @@
-// 侍メアリー — 白髪青目を継承、紺の着物に袴・刀を構える女武者
+// メアリー侍 — 白髪青目を継承、紺の着物に袴・刀を構える女武者
 // レアキャラ：キラキラ演出はCharacterDisplay側で重ねる
 export default function SamuraiCharacter({ size = 80 }: { size?: number }) {
   return (

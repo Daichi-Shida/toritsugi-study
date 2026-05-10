@@ -25,7 +25,7 @@ const STAGE_BG: Record<CharacterStage, string> = {
   // Lv6 大人メアリー：シャンパン×ゴールドの上品レア
   6: "radial-gradient(at 12% 8%, rgba(255, 240, 195, 0.95) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(244, 214, 184, 0.7) 0px, transparent 50%), radial-gradient(at 8% 100%, rgba(255, 233, 156, 0.55) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(212, 165, 116, 0.6) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 248, 220, 0.4) 0px, transparent 60%), linear-gradient(135deg, #fef9e7 0%, #faecc2 50%, #ecd09a 100%)",
 
-  // Lv7 侍メアリー：深い藍×紫×金のレジェンド
+  // Lv7 メアリー侍：深い藍×紫×金のレジェンド
   7: "radial-gradient(at 12% 8%, rgba(225, 195, 235, 0.7) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(195, 195, 245, 0.6) 0px, transparent 50%), radial-gradient(at 8% 100%, rgba(255, 233, 156, 0.45) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(168, 145, 220, 0.55) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 248, 220, 0.3) 0px, transparent 60%), linear-gradient(135deg, #f8f4fb 0%, #ede5f4 45%, #d6c5e8 100%)",
 };
 
