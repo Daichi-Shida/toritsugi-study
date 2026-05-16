@@ -33,13 +33,17 @@ function QuizContent() {
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [queue, setQueue] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [isAnswered, setIsAnswered] = useState(false);
+  // 各問題に対する回答（未回答は null）。前へ/次へで参照して復元できるよう保持。
+  const [answers, setAnswers] = useState<(number | null)[]>([]);
+  const [showResultSheet, setShowResultSheet] = useState(false);
   const [sessionCorrect, setSessionCorrect] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const sessionStartRef = useRef<number>(Date.now());
   const sessionCategoriesRef = useRef<Set<QuestionCategory>>(new Set());
   const sessionSavedRef = useRef(false);
+
+  const selectedIndex = answers[currentIndex] ?? null;
+  const isAnswered = selectedIndex !== null;
 
   // 演出用
   const [showConfetti, setShowConfetti] = useState(false);
@@ -89,11 +93,17 @@ function QuizContent() {
 
     if (questions.length === 0) {
       setQueue([]);
+      setAnswers([]);
+      setShowResultSheet(false);
       return;
     }
 
     const size = Math.min(SESSION_SIZE, questions.length);
     setQueue(questions.slice(0, size).map(shuffleQuestion));
+    setAnswers(new Array(size).fill(null));
+    setShowResultSheet(false);
+    setCurrentIndex(0);
+    setSessionCorrect(0);
   }, [isWeakMode, isBookmarkMode, chapterParam]);
 
   const currentQuestion = queue[currentIndex];
@@ -101,8 +111,12 @@ function QuizContent() {
   const handleAnswer = useCallback(
     (index: number) => {
       if (isAnswered || !currentQuestion || !progress) return;
-      setSelectedIndex(index);
-      setIsAnswered(true);
+      setAnswers((prev) => {
+        const next = [...prev];
+        next[currentIndex] = index;
+        return next;
+      });
+      setShowResultSheet(true);
 
       const isCorrect = index === currentQuestion.correctIndex;
       if (isCorrect) setSessionCorrect((c) => c + 1);
@@ -140,7 +154,7 @@ function QuizContent() {
         });
       }
     },
-    [isAnswered, currentQuestion, progress]
+    [isAnswered, currentQuestion, progress, currentIndex]
   );
 
   const finishSession = useCallback(() => {
@@ -162,11 +176,18 @@ function QuizContent() {
       finishSession();
       setIsComplete(true);
     } else {
-      setCurrentIndex((i) => i + 1);
-      setSelectedIndex(null);
-      setIsAnswered(false);
+      const nextIdx = currentIndex + 1;
+      setCurrentIndex(nextIdx);
+      setShowResultSheet(answers[nextIdx] !== null);
     }
-  }, [currentIndex, queue.length, finishSession]);
+  }, [currentIndex, queue.length, finishSession, answers]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex === 0) return;
+    const prevIdx = currentIndex - 1;
+    setCurrentIndex(prevIdx);
+    setShowResultSheet(answers[prevIdx] !== null);
+  }, [currentIndex, answers]);
 
   const handleToggleBookmark = useCallback(() => {
     if (!progress || !currentQuestion) return;
@@ -228,6 +249,14 @@ function QuizContent() {
       </div>
 
       <div className="flex items-center gap-3">
+        <button
+          onClick={handlePrev}
+          disabled={currentIndex === 0}
+          aria-label="前の問題に戻る"
+          className="shrink-0 text-[11px] font-bold tracking-[0.15em] uppercase text-mocha-500 hover:text-mocha-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1"
+        >
+          ← 前へ
+        </button>
         <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-cream-100/80 border border-cream-200">
           <motion.div
             className="h-full bg-gradient-to-r from-primary-300 via-primary-400 to-primary-600 rounded-full progress-shine"
@@ -241,11 +270,26 @@ function QuizContent() {
 
       <QuizCard question={currentQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={handleAnswer} />
 
+      {/* 解説を閉じている時のみ表示する『解説を見る』フローティングボタン */}
+      {isAnswered && !showResultSheet && (
+        <motion.button
+          initial={{ y: 60, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 60, opacity: 0 }}
+          onClick={() => setShowResultSheet(true)}
+          className="fixed bottom-5 right-5 z-30 rounded-full px-5 py-3 text-sm font-bold text-white shadow-glow flex items-center gap-2"
+          style={{ background: "linear-gradient(135deg, #e87063 0%, #d04a3d 100%)" }}
+        >
+          解説を見る ↑
+        </motion.button>
+      )}
+
       <ResultSheet
-        show={isAnswered}
+        show={isAnswered && showResultSheet}
         question={currentQuestion}
         selectedIndex={selectedIndex ?? 0}
         onNext={handleNext}
+        onClose={() => setShowResultSheet(false)}
         isLast={currentIndex + 1 >= queue.length}
         isBookmarked={isBookmarked}
         onToggleBookmark={handleToggleBookmark}

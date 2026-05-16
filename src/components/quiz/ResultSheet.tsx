@@ -12,6 +12,7 @@ interface Props {
   question: Question;
   selectedIndex: number;
   onNext: () => void;
+  onClose?: () => void;
   isLast: boolean;
   isBookmarked?: boolean;
   onToggleBookmark?: () => void;
@@ -127,7 +128,7 @@ function CharacterAvatar({ stage, move }: { stage: CharacterStage; move: MoveSpe
   );
 }
 
-export default function ResultSheet({ show, question, selectedIndex, onNext, isLast, isBookmarked, onToggleBookmark, characterStage }: Props) {
+export default function ResultSheet({ show, question, selectedIndex, onNext, onClose, isLast, isBookmarked, onToggleBookmark, characterStage }: Props) {
   const isCorrect = selectedIndex === question.correctIndex;
   const qType = question.type ?? "simple_select";
 
@@ -148,12 +149,13 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
       {show && (
         <>
           <motion.div
-            aria-hidden
+            aria-hidden={!onClose}
+            onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-30 bg-mocha-900/15 backdrop-blur-[2px] pointer-events-none"
+            className={`fixed inset-0 z-30 bg-mocha-900/15 backdrop-blur-[2px] ${onClose ? "cursor-pointer" : "pointer-events-none"}`}
           />
 
           <motion.div
@@ -172,8 +174,27 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, isL
                   : "linear-gradient(180deg, rgba(255, 224, 220, 0.92) 0%, rgba(255, 252, 246, 0.95) 18%, rgba(255, 252, 246, 0.97) 100%)",
               }}
             >
-              <div className="flex justify-center pt-2 pb-1 shrink-0">
-                <div className="w-10 h-1 rounded-full bg-mocha-300/60" />
+              <div className="flex items-center justify-center pt-2 pb-1 shrink-0 relative">
+                {onClose ? (
+                  <button
+                    onClick={onClose}
+                    aria-label="解説を閉じて問題を見る"
+                    className="absolute inset-x-0 top-0 h-7 flex items-center justify-center hover:bg-mocha-100/30 transition-colors"
+                  >
+                    <div className="w-10 h-1 rounded-full bg-mocha-300/80" />
+                  </button>
+                ) : (
+                  <div className="w-10 h-1 rounded-full bg-mocha-300/60" />
+                )}
+                {onClose && (
+                  <button
+                    onClick={onClose}
+                    aria-label="閉じる"
+                    className="absolute right-3 top-2 w-7 h-7 rounded-full bg-white/60 hover:bg-white/90 border border-cream-200 text-mocha-500 hover:text-mocha-800 flex items-center justify-center text-sm font-bold shadow-soft"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
 
               {/* ヘッダー：キャラ + 吹き出し */}
