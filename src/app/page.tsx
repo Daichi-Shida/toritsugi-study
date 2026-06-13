@@ -41,20 +41,17 @@ export default function HomePage() {
   return (
     <>
       {/* ───────── モバイル ───────── */}
-      <div className="flex flex-col gap-5 p-5 pb-10 lg:hidden">
+      <div className="flex flex-col gap-3 px-4 pt-3 pb-6 lg:hidden">
         <motion.header
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="pt-6 text-center"
+          className="text-center"
         >
-          <p className="text-[11px] font-bold tracking-[0.3em] text-primary-600 uppercase mb-1">
-            Toritsugi Study
-          </p>
-          <h1 className="headline text-2xl font-bold">
+          <h1 className="headline text-xl font-bold leading-tight">
             登録販売者<span className="shimmer-gold">資格試験</span>
           </h1>
-          <p className="text-xs text-mocha-500 mt-1.5 tracking-wide">一緒に合格を目指そう</p>
+          <p className="text-[11px] text-mocha-500 tracking-wide">一緒に合格を目指そう</p>
         </motion.header>
 
         <motion.div
@@ -82,15 +79,25 @@ export default function HomePage() {
           <StatTile label="見直し" value={bookmarks} unit="件" />
         </motion.div>
 
-        <div className="flex flex-col gap-2.5 mt-1">
-          {menuItems.map((m, i) => (
+        {/* 主アクション */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.22 }}
+        >
+          <MenuItem {...menuItems[0]} />
+        </motion.div>
+
+        {/* サブメニューは2×2グリッドでコンパクトに */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {menuItems.slice(1).map((m, i) => (
             <motion.div
               key={m.href}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.22 + i * 0.05 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.27 + i * 0.05 }}
             >
-              <MenuItem {...m} />
+              <MenuTile {...m} />
             </motion.div>
           ))}
         </div>
@@ -159,6 +166,21 @@ function StatTile({ label, value, unit, big = false }: { label: string; value: n
         {label}
       </p>
     </div>
+  );
+}
+
+function MenuTile({ href, label, sub, emoji }: { href: string; label: string; sub: string; emoji: string; primary?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className="card-flat group flex flex-col gap-1.5 px-3.5 py-3 h-full active:scale-[0.97] transition-all hover:bg-white/85 hover:border-primary-300"
+    >
+      <span className="text-2xl leading-none">{emoji}</span>
+      <div className="min-w-0">
+        <p className="font-bold text-sm text-mocha-800 leading-tight">{label}</p>
+        <p className="text-[10px] text-mocha-500 mt-0.5 leading-tight truncate">{sub}</p>
+      </div>
+    </Link>
   );
 }
 
