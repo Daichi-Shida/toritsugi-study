@@ -97,9 +97,9 @@
 
   /* ───────── Option buttons ───────── */
   .option-btn {
-    @apply w-full text-left rounded-2xl px-4 py-3.5 font-medium
+    @apply w-full text-left rounded-2xl px-4 py-2.5 font-medium
            transition-all duration-150 backdrop-blur-md;
-    min-height: 56px;
+    min-height: 50px;
     border: 1.5px solid rgba(212, 165, 116, 0.25);
     background: rgba(255, 255, 255, 0.6);
   }

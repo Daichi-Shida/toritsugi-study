@@ -159,43 +159,32 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, onC
           />
 
           <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 260, damping: 28 }}
-            className="fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md z-40 flex flex-col"
-            style={{ maxHeight: "calc(100dvh - 64px)" }}
+            initial={{ opacity: 0, scale: 0.9, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 16 }}
+            transition={{ type: "spring", stiffness: 300, damping: 26 }}
+            className="fixed inset-0 z-40 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="rounded-t-3xl backdrop-blur-2xl border-t border-x border-white/70 shadow-glass overflow-hidden flex flex-col"
+              className="pointer-events-auto w-full max-w-sm rounded-3xl backdrop-blur-2xl border border-white/70 shadow-glass overflow-hidden flex flex-col"
               style={{
+                maxHeight: "calc(100dvh - 32px)",
                 background: isCorrect
-                  ? "linear-gradient(180deg, rgba(232, 247, 220, 0.92) 0%, rgba(255, 252, 246, 0.95) 18%, rgba(255, 252, 246, 0.97) 100%)"
-                  : "linear-gradient(180deg, rgba(255, 224, 220, 0.92) 0%, rgba(255, 252, 246, 0.95) 18%, rgba(255, 252, 246, 0.97) 100%)",
+                  ? "linear-gradient(180deg, rgba(232, 247, 220, 0.94) 0%, rgba(255, 252, 246, 0.96) 22%, rgba(255, 252, 246, 0.98) 100%)"
+                  : "linear-gradient(180deg, rgba(255, 224, 220, 0.94) 0%, rgba(255, 252, 246, 0.96) 22%, rgba(255, 252, 246, 0.98) 100%)",
               }}
             >
-              <div className="flex items-center justify-center pt-2 pb-1 shrink-0 relative">
-                {onClose ? (
-                  <button
-                    onClick={onClose}
-                    aria-label="解説を閉じて問題を見る"
-                    className="absolute inset-x-0 top-0 h-7 flex items-center justify-center hover:bg-mocha-100/30 transition-colors"
-                  >
-                    <div className="w-10 h-1 rounded-full bg-mocha-300/80" />
-                  </button>
-                ) : (
-                  <div className="w-10 h-1 rounded-full bg-mocha-300/60" />
-                )}
-                {onClose && (
+              {onClose && (
+                <div className="flex items-center justify-end px-3 pt-2.5 shrink-0">
                   <button
                     onClick={onClose}
                     aria-label="閉じる"
-                    className="absolute right-3 top-2 w-7 h-7 rounded-full bg-white/60 hover:bg-white/90 border border-cream-200 text-mocha-500 hover:text-mocha-800 flex items-center justify-center text-sm font-bold shadow-soft"
+                    className="w-7 h-7 rounded-full bg-white/60 hover:bg-white/90 border border-cream-200 text-mocha-500 hover:text-mocha-800 flex items-center justify-center text-sm font-bold shadow-soft"
                   >
                     ✕
                   </button>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* ヘッダー：キャラ + 吹き出し */}
               <div className="px-5 pt-1 pb-3 flex items-end gap-3 shrink-0">

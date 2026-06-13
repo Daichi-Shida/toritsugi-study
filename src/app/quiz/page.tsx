@@ -233,8 +233,11 @@ function QuizContent() {
   const isBookmarked = progress.bookmarkedIds.includes(currentQuestion.id);
 
   return (
-    <div className="flex flex-col gap-4 p-5 pb-8">
-      <div className="flex items-center gap-3 pt-3">
+    <div
+      className="flex flex-col gap-3 px-4 pt-2 h-[100dvh]"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
+    >
+      <div className="flex items-center gap-3 shrink-0">
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-white/60 backdrop-blur-md border border-white/70 flex items-center justify-center text-mocha-500 hover:text-mocha-800 transition-colors shrink-0" aria-label="戻る">
           ←
         </button>
@@ -248,7 +251,7 @@ function QuizContent() {
         </button>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 shrink-0">
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
@@ -268,7 +271,9 @@ function QuizContent() {
         <span className="text-xs text-mocha-500 whitespace-nowrap font-bold tracking-wide">{currentIndex + 1} / {queue.length}</span>
       </div>
 
-      <QuizCard question={currentQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={handleAnswer} />
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin -mx-1 px-1">
+        <QuizCard question={currentQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={handleAnswer} />
+      </div>
 
       {/* 解説を閉じている時のみ表示する『解説を見る』フローティングボタン */}
       {isAnswered && !showResultSheet && (

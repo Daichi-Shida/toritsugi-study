@@ -24,7 +24,7 @@ function optionClass(i: number, correctIndex: number, selectedIndex: number | nu
 
 function SimpleSelectOptions({ question, selectedIndex, isAnswered, onAnswer }: { question: SimpleSelectQuestion } & Omit<Props, "question">) {
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2">
       {question.options.map((option, i) => {
         const isWrongPick = isAnswered && i === selectedIndex && i !== question.correctIndex;
         const isCorrectPick = isAnswered && i === question.correctIndex;
@@ -97,7 +97,7 @@ function SeigoCombinationOptions({ question, selectedIndex, isAnswered, onAnswer
 
 function CorrectCombinationOptions({ question, selectedIndex, isAnswered, onAnswer }: { question: CorrectCombinationQuestion } & Omit<Props, "question">) {
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2">
       {question.combo_options.map((pair, i) => (
         <motion.button
           key={i}
@@ -137,7 +137,7 @@ export default function QuizCard({ question, selectedIndex, isAnswered, onAnswer
       animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 220, damping: 22 }}
       style={{ perspective: 800, transformStyle: "preserve-3d" }}
-      className="card flex flex-col gap-4"
+      className="card flex flex-col gap-3 !p-4"
     >
       {/* メタ情報 */}
       <div className="flex items-center gap-2 flex-wrap">
