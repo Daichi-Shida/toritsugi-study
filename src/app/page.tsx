@@ -40,30 +40,33 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ───────── モバイル ───────── */}
-      <div className="flex flex-col gap-3 px-4 pt-3 pb-6 lg:hidden">
+      {/* ───────── モバイル（1画面に収める） ───────── */}
+      <div
+        className="flex flex-col gap-2.5 px-4 pt-2 h-[100dvh] lg:hidden"
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
+      >
         <motion.header
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center"
+          className="text-center shrink-0"
         >
-          <h1 className="headline text-xl font-bold leading-tight">
+          <h1 className="headline text-lg font-bold leading-tight">
             登録販売者<span className="shimmer-gold">資格試験</span>
           </h1>
-          <p className="text-[11px] text-mocha-500 tracking-wide">一緒に合格を目指そう</p>
+          <p className="text-[10px] text-mocha-500 tracking-wide">一緒に合格を目指そう</p>
         </motion.header>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="card relative overflow-hidden"
+          className="card relative overflow-hidden shrink-0 !p-4"
         >
           {/* 装飾のサークル */}
           <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-rose-gold opacity-20 blur-2xl" />
           <CharacterDisplay character={progress.character} />
-          <div className="mt-5">
+          <div className="mt-3">
             <PassExpectationGauge value={progress.character.passExpectation} />
           </div>
         </motion.div>
@@ -72,34 +75,38 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.18 }}
-          className="grid grid-cols-3 gap-2"
+          className="grid grid-cols-3 gap-2 shrink-0"
         >
           <StatTile label="連続学習" value={streak} unit="日" />
           <StatTile label="累計解答" value={totalAnswered} unit="問" />
           <StatTile label="見直し" value={bookmarks} unit="件" />
         </motion.div>
 
-        {/* 主アクション */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.22 }}
-        >
-          <MenuItem {...menuItems[0]} />
-        </motion.div>
+        {/* メニュー：残りの高さを埋めてスクロールを出さない */}
+        <div className="flex-1 min-h-0 flex flex-col gap-2.5">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.22 }}
+            className="shrink-0"
+          >
+            <MenuItem {...menuItems[0]} />
+          </motion.div>
 
-        {/* サブメニューは2×2グリッドでコンパクトに */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {menuItems.slice(1).map((m, i) => (
-            <motion.div
-              key={m.href}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.27 + i * 0.05 }}
-            >
-              <MenuTile {...m} />
-            </motion.div>
-          ))}
+          {/* サブメニューは2×2グリッドで残り領域いっぱいに */}
+          <div className="grid grid-cols-2 gap-2.5 flex-1 min-h-0">
+            {menuItems.slice(1).map((m, i) => (
+              <motion.div
+                key={m.href}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.27 + i * 0.05 }}
+                className="min-h-0 h-full"
+              >
+                <MenuTile {...m} />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -173,7 +180,7 @@ function MenuTile({ href, label, sub, emoji }: { href: string; label: string; su
   return (
     <Link
       href={href}
-      className="card-flat group flex flex-col gap-1.5 px-3.5 py-3 h-full active:scale-[0.97] transition-all hover:bg-white/85 hover:border-primary-300"
+      className="card-flat group flex flex-col justify-center gap-1.5 px-3.5 py-3 h-full active:scale-[0.97] transition-all hover:bg-white/85 hover:border-primary-300"
     >
       <span className="text-2xl leading-none">{emoji}</span>
       <div className="min-w-0">
