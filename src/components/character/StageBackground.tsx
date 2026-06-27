@@ -27,6 +27,12 @@ const STAGE_BG: Record<CharacterStage, string> = {
 
   // Lv7 メアリー侍：深い藍×紫×金のレジェンド
   7: "radial-gradient(at 12% 8%, rgba(225, 195, 235, 0.7) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(195, 195, 245, 0.6) 0px, transparent 50%), radial-gradient(at 8% 100%, rgba(255, 233, 156, 0.45) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(168, 145, 220, 0.55) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 248, 220, 0.3) 0px, transparent 60%), linear-gradient(135deg, #f8f4fb 0%, #ede5f4 45%, #d6c5e8 100%)",
+
+  // Lv8 豆侍：黄金が輝くゴールドレジェンド
+  8: "radial-gradient(at 12% 8%, rgba(255, 240, 170, 0.95) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(255, 216, 100, 0.7) 0px, transparent 50%), radial-gradient(at 8% 100%, rgba(255, 233, 156, 0.6) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(211, 154, 22, 0.6) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 250, 210, 0.45) 0px, transparent 60%), linear-gradient(135deg, #fffae6 0%, #ffeeb0 45%, #f0c850 100%)",
+
+  // Lv9 ねこさん：ふんわりピンク×クリームの最上位
+  9: "radial-gradient(at 12% 8%, rgba(255, 224, 235, 0.9) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(253, 164, 175, 0.55) 0px, transparent 50%), radial-gradient(at 8% 100%, rgba(255, 240, 210, 0.6) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(251, 207, 232, 0.6) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 250, 240, 0.45) 0px, transparent 60%), linear-gradient(135deg, #fff8fa 0%, #ffe9f0 45%, #fbd6c8 100%)",
 };
 
 export default function StageBackground() {

@@ -1,0 +1,2402 @@
+[
+  {
+    "id": "hard_ch1_001",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "医薬品のリスク評価に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬品は、少量の投与でも長期投与されれば慢性的な毒性が発現する場合がある。"
+      },
+      {
+        "label": "イ",
+        "text": "動物実験により求められる50%致死量（LD50）は、薬物の毒性の指標として用いられる。"
+      },
+      {
+        "label": "ウ",
+        "text": "治療量を超えた量を単回投与した場合、毒性が発現することはない。"
+      },
+      {
+        "label": "エ",
+        "text": "少量の投与でも、発がん作用や胎児への影響が生じることがある。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 2,
+    "explanation": "ア：正しい。少量でも長期投与により慢性毒性が現れることがある。　イ：正しい。LD50は毒性の指標として用いられる。　ウ：誤り。過量を単回投与すれば急性毒性が発現しうる。　エ：正しい。少量でも発がん・催奇形性が問題となることがある。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_002",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "保健機能食品等に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "いわゆる健康食品は、その多くが錠剤やカプセル等の医薬品に類似した形状で販売されている。"
+      },
+      {
+        "label": "イ",
+        "text": "機能性表示食品は、事業者の責任で、疾病に罹患した者の疾病の治療に役立つ機能を表示できる。"
+      },
+      {
+        "label": "ウ",
+        "text": "特定保健用食品は、保健機能成分を含み、国の個別の許可を受けたものである。"
+      },
+      {
+        "label": "エ",
+        "text": "栄養機能食品は、国が定めた規格基準に適合していれば、栄養成分の健康機能を表示できる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。医薬品に類似した形状のものが多い。　イ：誤り。対象は疾病に罹患していない者で、疾病の治療効果は表示できない。　ウ：正しい。トクホは国の個別許可制である。　エ：正しい。栄養機能食品は規格基準型である。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_003",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "医薬品の副作用に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "WHOの定義では、副作用は「通常用いられる量で発現する医薬品の有害かつ意図しない反応」とされている。"
+      },
+      {
+        "label": "イ",
+        "text": "アレルギーは、医薬品の薬理作用とは関係なく起こり得る。"
+      },
+      {
+        "label": "ウ",
+        "text": "アレルギーは、内服薬では起こるが外用薬で引き起こされることはない。"
+      },
+      {
+        "label": "エ",
+        "text": "医薬品の添加物は、アレルギーを引き起こす原因物質（アレルゲン）とはならない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。WHOの副作用の定義に合致する。　イ：正しい。薬理作用と無関係に生じうる。　ウ：誤り。外用薬でもアレルギーは生じる。　エ：誤り。黄色4号やカゼイン等、添加物もアレルゲンとなりうる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_004",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "医薬品の不適正な使用と相互作用に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "一般用医薬品には、習慣性・依存性がある成分を含んでいるものはない。"
+      },
+      {
+        "label": "イ",
+        "text": "登録販売者は、必要以上の大量購入や頻回購入を試みる者には積極的に事情を尋ねる等慎重に対処する。"
+      },
+      {
+        "label": "ウ",
+        "text": "複数の医薬品を併用して作用が増強・減弱することを相互作用という。"
+      },
+      {
+        "label": "エ",
+        "text": "相互作用には、吸収・分布・代謝・排泄の過程で起こるものと、薬理作用をもたらす部位で起こるものがある。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：誤り。習慣性・依存性のある成分を含む一般用医薬品がある。　イ：正しい。乱用防止の観点から慎重な対処が必要。　ウ：正しい。相互作用の定義に合致する。　エ：正しい。薬物動態学的・薬力学的相互作用がある。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_005",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "小児・高齢者への医薬品の使用に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "小児は大人と比べ身体の大きさに対して腸が長く、医薬品の吸収率が相対的に高い。"
+      },
+      {
+        "label": "イ",
+        "text": "小児は血液脳関門が未発達なため、医薬品の成分が脳に達しやすい。"
+      },
+      {
+        "label": "ウ",
+        "text": "高齢者は肝臓や腎臓の機能が低下していると、医薬品の作用が現れにくい。"
+      },
+      {
+        "label": "エ",
+        "text": "「高齢者」とは、おおよその目安として65歳以上を指す。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。小児は相対的に吸収率が高い。　イ：正しい。中枢への移行が起こりやすい。　ウ：誤り。代謝・排泄が遅れ、作用が強く現れやすい。　エ：正しい。目安として65歳以上とされる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_006",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "妊婦等への配慮とプラセボ効果に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "胎盤には、母体と胎児の血液が混ざらないようにする血液胎盤関門がある。"
+      },
+      {
+        "label": "イ",
+        "text": "ビタミンA含有製剤は、妊娠前後の一定期間に通常用量を超えて摂取すると胎児に先天異常を起こす危険性が高まる。"
+      },
+      {
+        "label": "ウ",
+        "text": "医薬品の成分が乳汁中に移行することはない。"
+      },
+      {
+        "label": "エ",
+        "text": "プラセボ効果は、楽観的な結果への期待（暗示効果）等が関与して生じると考えられている。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。血液胎盤関門が存在する。　イ：正しい。ビタミンA過剰摂取は催奇形性のリスクがある。　ウ：誤り。乳汁中に移行する成分があり、乳児に影響しうる。　エ：正しい。暗示効果等が関与する。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_007",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "医薬品の品質に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬品は、適切に保管・陳列しても、経時変化による品質の劣化は避けられない。"
+      },
+      {
+        "label": "イ",
+        "text": "「使用期限」は、未開封状態で保管された場合に品質が保持される期限である。"
+      },
+      {
+        "label": "ウ",
+        "text": "医薬品は高温や多湿で劣化するが、光（紫外線）によって劣化することはない。"
+      },
+      {
+        "label": "エ",
+        "text": "配合成分には、高温・多湿・光等で品質の劣化を起こしやすいものが多い。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。経時変化は避けられない。　イ：正しい。未開封での品質保持の期限である。　ウ：誤り。光によっても品質の劣化を起こす。　エ：正しい。劣化しやすい成分が多い。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch1_008",
+    "type": "seigo_combination",
+    "category": "医薬品に共通する特性と基本的な知識",
+    "year": 2025,
+    "text": "医薬品の薬害に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "サリドマイド製剤は、催眠鎮静成分として承認されたほか、胃腸薬にも配合された。"
+      },
+      {
+        "label": "イ",
+        "text": "サリドマイドの催奇形性は、血管新生を妨げる作用（S体）が関与するとされる。"
+      },
+      {
+        "label": "ウ",
+        "text": "催眠鎮静作用を持つR体を分離して製剤化すれば、催奇形性は避けられる。"
+      },
+      {
+        "label": "エ",
+        "text": "スモン訴訟は、キノホルム製剤による亜急性脊髄視神経症に関する訴訟である。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。胃腸薬にも配合された。　イ：正しい。S体の血管新生阻害作用が関与する。　ウ：誤り。体内でR体とS体は相互に転換するため、分離しても催奇形性は避けられない。　エ：正しい。キノホルムによるスモンの訴訟である。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_001",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "消化器系に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "唾液には、デンプンを分解する消化酵素（唾液アミラーゼ）が含まれる。"
+      },
+      {
+        "label": "イ",
+        "text": "胃酸は、胃内を強酸性に保ち、内容物の腐敗や発酵を抑える殺菌作用がある。"
+      },
+      {
+        "label": "ウ",
+        "text": "膵臓は、炭水化物・タンパク質・脂質のいずれも消化する酵素を供給する。"
+      },
+      {
+        "label": "エ",
+        "text": "小腸は、十二指腸・回腸・盲腸の3部分に分かれる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。プチアリン（唾液アミラーゼ）を含む。　イ：正しい。殺菌的に働く。　ウ：正しい。三大栄養素すべての消化酵素を供給する。　エ：誤り。小腸は十二指腸・空腸・回腸の3部分。盲腸は大腸の一部。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_002",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "肝臓の機能に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "肝臓では、必須アミノ酸を生合成することができる。"
+      },
+      {
+        "label": "イ",
+        "text": "小腸で吸収されたブドウ糖は、肝臓でグリコーゲンとして蓄えられる。"
+      },
+      {
+        "label": "ウ",
+        "text": "肝臓は、脂溶性ビタミンであるビタミンA・Dを貯蔵できる。"
+      },
+      {
+        "label": "エ",
+        "text": "アルコールは、肝臓でアセトアルデヒドを経て酢酸に代謝される。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 2,
+    "explanation": "ア：誤り。必須アミノ酸は体内で生合成できず、食品から摂取する必要がある。　イ：正しい。グリコーゲンとして貯蔵される。　ウ：正しい。脂溶性ビタミンを貯蔵する。　エ：正しい。アセトアルデヒドを経て酢酸となる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_003",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "呼吸器系に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "気道のうち、咽頭・喉頭までの部分を上気道という。"
+      },
+      {
+        "label": "イ",
+        "text": "喉頭から気管支までの部分を上気道という。"
+      },
+      {
+        "label": "ウ",
+        "text": "肺自体には肺を動かす筋組織がなく、横隔膜や肋間筋によって拡張・収縮する。"
+      },
+      {
+        "label": "エ",
+        "text": "肺胞ではガス交換が行われ、血液中に酸素が取り込まれ二酸化炭素が排出される。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。鼻腔〜咽頭・喉頭が上気道。　イ：誤り。喉頭から気管支までは下気道である。　ウ：正しい。肺は自力で動かず、横隔膜等の働きによる。　エ：正しい。肺胞でガス交換が行われる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_004",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "循環器系に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "心臓の右側部分（右心房・右心室）は、全身から集まった血液を肺へ送り出す。"
+      },
+      {
+        "label": "イ",
+        "text": "四肢を通る静脈には、血液の逆流を防ぐ静脈弁が発達している。"
+      },
+      {
+        "label": "ウ",
+        "text": "血漿中のアルブミンは、ホルモンや医薬品の成分と複合体を形成して運搬に関わる。"
+      },
+      {
+        "label": "エ",
+        "text": "赤血球は骨髄で産生されるが、白血球は骨髄では産生されない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 2,
+    "explanation": "ア：正しい。右心系は血液を肺へ送る。　イ：正しい。静脈弁が逆流を防ぐ。　ウ：正しい。アルブミンは運搬に関わる。　エ：誤り。白血球も骨髄で産生される。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_005",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "泌尿器系に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "腎臓に入る動脈は枝分かれし、毛細血管が球状になった糸球体を形成する。"
+      },
+      {
+        "label": "イ",
+        "text": "副腎皮質では、自律神経系に作用するアドレナリンとノルアドレナリンが分泌される。"
+      },
+      {
+        "label": "ウ",
+        "text": "ビタミンDは、腎臓で活性型ビタミンDに転換される。"
+      },
+      {
+        "label": "エ",
+        "text": "高齢者は腎機能が低下していると、医薬品の排泄が遅れ作用が強く現れやすい。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。糸球体を形成する。　イ：誤り。アドレナリン等を分泌するのは副腎髄質である。　ウ：正しい。腎臓で活性化される。　エ：正しい。排泄遅延により作用が強まりやすい。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_006",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "目に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "水晶体は、毛様体の収縮・弛緩によって厚みを変え、遠近の焦点を調節する。"
+      },
+      {
+        "label": "イ",
+        "text": "結膜の充血では、白目だけでなくまぶたの裏側も赤くなる。"
+      },
+      {
+        "label": "ウ",
+        "text": "ビタミンAが不足すると、夜間視力が低下する夜盲症を生じる。"
+      },
+      {
+        "label": "エ",
+        "text": "涙液には、リゾチームや免疫グロブリン等が含まれ感染を防御する。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 2,
+    "explanation": "ア：正しい。水晶体の厚みで焦点調節する。　イ：正しい。結膜充血はまぶた裏も赤くなる。　ウ：正しい。ビタミンA不足は夜盲症の原因となる。　エ：正しい。涙液は感染防御に関わる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_007",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "外皮系・骨格系に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "メラニン色素は、表皮基底層のメラノサイトで産生され、紫外線から皮膚を防護する。"
+      },
+      {
+        "label": "イ",
+        "text": "汗腺のうちエクリン腺は、手のひらなど限られた部位のみに分布する。"
+      },
+      {
+        "label": "ウ",
+        "text": "骨組織では、破骨細胞による骨吸収と骨芽細胞による骨形成が常に行われている。"
+      },
+      {
+        "label": "エ",
+        "text": "骨の内部の骨髄では、造血が行われる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。メラノサイトで産生される。　イ：誤り。エクリン腺はほぼ全身に分布する。限られた部位に分布するのはアポクリン腺。　ウ：正しい。骨の新陳代謝が常に行われる。　エ：正しい。骨髄で造血が行われる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch2_008",
+    "type": "seigo_combination",
+    "category": "人体の働きと医薬品",
+    "year": 2025,
+    "text": "医薬品の吸収と剤形に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "内服薬の有効成分の多くは、主に小腸で吸収される。"
+      },
+      {
+        "label": "イ",
+        "text": "坐剤は、直腸内壁から吸収され、必ず肝臓で代謝を受けてから全身に分布する。"
+      },
+      {
+        "label": "ウ",
+        "text": "消化管からの吸収は、一般に濃度の高い方から低い方へ受動的に拡散する現象である。"
+      },
+      {
+        "label": "エ",
+        "text": "チュアブル錠は、口中で舐めたり噛み砕いたりして、水なしでも服用できる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 2,
+    "explanation": "ア：正しい。多くは小腸で吸収される。　イ：誤り。直腸からの吸収は肝臓での初回通過効果を受けにくい。　ウ：正しい。受動拡散による。　エ：正しい。水なしで服用できる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_001",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "かぜ及びかぜ薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "かぜの約8割はウイルス感染が原因だが、細菌感染等が原因となることもある。"
+      },
+      {
+        "label": "イ",
+        "text": "かぜ薬は、ウイルスの増殖を抑えたり、ウイルスを体内から除去するものである。"
+      },
+      {
+        "label": "ウ",
+        "text": "アスピリンやサザピリンは、一般用医薬品では15歳未満の小児にいかなる場合も使用しない。"
+      },
+      {
+        "label": "エ",
+        "text": "抗ヒスタミン成分は、くしゃみや鼻汁を抑える目的で配合される。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。多くはウイルスだが細菌等もある。　イ：誤り。かぜ薬は諸症状を緩和する対症療法薬である。　ウ：正しい。サリチル酸系はライ症候群の懸念から15歳未満に使用しない。　エ：正しい。くしゃみ・鼻汁の抑制に用いられる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_002",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "解熱鎮痛薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "アセトアミノフェンは主に中枢作用で解熱鎮痛をもたらし、末梢の抗炎症作用はほとんど期待できない。"
+      },
+      {
+        "label": "イ",
+        "text": "イブプロフェンは、一般用医薬品では15歳未満の小児に対して使用できる。"
+      },
+      {
+        "label": "ウ",
+        "text": "アスピリンには、血液を凝固しにくくさせる作用がある。"
+      },
+      {
+        "label": "エ",
+        "text": "ボウイ（防已）は、鎮痛・利尿等を目的として用いられる生薬成分である。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。抗炎症作用は弱い。　イ：誤り。一般用医薬品では15歳未満の小児に使用しない。　ウ：正しい。抗血小板作用がある。　エ：正しい。鎮痛・利尿等に用いられる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_003",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "眠気に関わる薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "抗ヒスタミン成分を主薬とする催眠鎮静薬は、慢性的に続く不眠症状の改善に適している。"
+      },
+      {
+        "label": "イ",
+        "text": "ブロモバレリル尿素は、反復摂取により依存を生じることがある。"
+      },
+      {
+        "label": "ウ",
+        "text": "カフェインには、腎臓での水分の再吸収を抑制し、尿量を増やす利尿作用がある。"
+      },
+      {
+        "label": "エ",
+        "text": "カフェインは、一部が胎盤関門を通過して胎児に到達する。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：誤り。一時的な睡眠障害の緩和に用いるもので、慢性不眠には適さない。　イ：正しい。依存性がある。　ウ：正しい。利尿作用がある。　エ：正しい。胎盤を通過する。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_004",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "胃腸に作用する薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "炭酸水素ナトリウムは、中和反応によって胃酸の働きを弱める制酸成分である。"
+      },
+      {
+        "label": "イ",
+        "text": "ロートエキスは、副交感神経の働きを抑えて胃液の分泌を抑える。"
+      },
+      {
+        "label": "ウ",
+        "text": "ビスマスを含む止瀉成分は、細菌感染による下痢に積極的に用いるべきである。"
+      },
+      {
+        "label": "エ",
+        "text": "センノシドは、大腸を刺激して排便を促す瀉下成分である。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。中和により制酸作用を示す。　イ：正しい。抗コリン作用で分泌を抑える。　ウ：誤り。細菌性下痢の場合、止瀉により症状を悪化させるおそれがあり適さない。　エ：正しい。大腸刺激性瀉下成分である。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_005",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "強心薬・高コレステロール改善薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "センソは、ヒキガエル科動物の毒腺の分泌物で、微量で強心作用を示す。"
+      },
+      {
+        "label": "イ",
+        "text": "センソは有効域が狭く、1日用量中センソ5mgを超えて含有する医薬品は劇薬に指定される。"
+      },
+      {
+        "label": "ウ",
+        "text": "コレステロールは、細胞の構成成分やホルモン等の産生に重要で、生体に不可欠である。"
+      },
+      {
+        "label": "エ",
+        "text": "大豆油不けん化物（ソイステロール）は、悪心・嘔吐を目的として用いられる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。微量で強心作用を示す。　イ：正しい。5mg超は劇薬指定である。　ウ：正しい。生体に不可欠な物質である。　エ：誤り。腸管でのコレステロール吸収を抑える目的で用いられる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_006",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "アレルギー用薬・鼻炎用薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "クロルフェニラミンマレイン酸塩等の抗ヒスタミン成分は、抗コリン作用も示す。"
+      },
+      {
+        "label": "イ",
+        "text": "プソイドエフェドリン塩酸塩は、交感神経を刺激し鼻粘膜の血管を収縮させて鼻づまりを緩和する。"
+      },
+      {
+        "label": "ウ",
+        "text": "抗ヒスタミン成分は、遊離したヒスタミンが受容体と結合するのを妨げる。"
+      },
+      {
+        "label": "エ",
+        "text": "鼻炎用点鼻薬は、長期連用しても鼻づまりがひどくなることはない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。抗コリン作用を併せ持つ。　イ：正しい。血管収縮で鼻閉を緩和する。　ウ：正しい。ヒスタミンの受容体結合を妨げる。　エ：誤り。アドレナリン作動成分の過度の使用で、かえって鼻づまりがひどくなることがある。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_007",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "眼科用薬・外皮用薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "点眼薬は結膜嚢に適用するもので、通常、無菌的に製造されている。"
+      },
+      {
+        "label": "イ",
+        "text": "点眼後にまぶたを閉じ目頭を押さえると、薬液が鼻に流れるのを抑えられる。"
+      },
+      {
+        "label": "ウ",
+        "text": "コンタクトレンズ装着時の点眼は、可と記載のあるものを除き避けることとされている。"
+      },
+      {
+        "label": "エ",
+        "text": "ステロイド性抗炎症成分の外用薬は、広範囲や慢性の湿疹・皮膚炎を対象とする。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。無菌的に製造される。　イ：正しい。目頭を押さえると効果的である。　ウ：正しい。原則として避ける。　エ：誤り。広範囲や化膿・慢性の症状を対象とするものではない。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch3_008",
+    "type": "seigo_combination",
+    "category": "主な医薬品とその作用",
+    "year": 2025,
+    "text": "漢方・生薬・消毒薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "漢方処方製剤は、適用年齢の下限がない場合でも、生後3ヶ月未満の乳児には使用しない。"
+      },
+      {
+        "label": "イ",
+        "text": "カンゾウ（甘草）を大量に摂取すると、偽アルドステロン症を生じるおそれがある。"
+      },
+      {
+        "label": "ウ",
+        "text": "漢方薬は作用が穏やかなため、長期間服用しても重篤な副作用が起きることはない。"
+      },
+      {
+        "label": "エ",
+        "text": "クレゾール石ケン液は、結核菌や大部分のウイルスに対する殺菌消毒作用はない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。生後3ヶ月未満には使用しない。　イ：正しい。偽アルドステロン症のリスクがある。　ウ：誤り。漢方薬でも重篤な副作用（間質性肺炎、肝機能障害等）が起きうる。　エ：誤り。結核菌を含む一般細菌・真菌には有効。効果がないのは大部分のウイルスである。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_001",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "医薬品の定義と範囲に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬品医療機器等法第1条では、品質・有効性・安全性の確保等が目的として掲げられている。"
+      },
+      {
+        "label": "イ",
+        "text": "日本薬局方に収められている物は、すべて医薬品である。"
+      },
+      {
+        "label": "ウ",
+        "text": "「やせ薬」を標榜した無承認無許可医薬品は、法の取締りの対象とならない。"
+      },
+      {
+        "label": "エ",
+        "text": "人の身体に直接使用されない殺虫剤等であっても、医薬品に該当する場合がある。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。法の目的に合致する。　イ：正しい。日局収載品はすべて医薬品である。　ウ：誤り。無承認無許可医薬品も取締りの対象となる。　エ：正しい。該当する場合がある。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_002",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "一般用医薬品・要指導医薬品に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "一般用医薬品・要指導医薬品は、がんや心臓病等の重篤な疾病に対する効能効果は認められない。"
+      },
+      {
+        "label": "イ",
+        "text": "要指導医薬品は、薬剤師の対面による情報提供及び薬学的知見に基づく指導が義務づけられている。"
+      },
+      {
+        "label": "ウ",
+        "text": "一般用医薬品では、注射等の侵襲性の高い使用方法は用いられていない。"
+      },
+      {
+        "label": "エ",
+        "text": "要指導医薬品は、安全性情報が十分でないため、すべて毒薬又は劇薬に指定されている。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        false,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。重篤な疾病への効能効果は認められない。　イ：正しい。対面・薬剤師の指導が義務である。　ウ：正しい。侵襲性の高い方法は用いられない。　エ：誤り。要指導医薬品がすべて毒薬・劇薬に指定されているわけではない。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_003",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "毒薬・劇薬に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "毒薬は、直接の容器等に黒地に白枠・白字で品名及び「毒」の文字を記載しなければならない。"
+      },
+      {
+        "label": "イ",
+        "text": "劇薬は、直接の容器等に白地に赤枠・赤字で品名及び「劇」の文字を記載しなければならない。"
+      },
+      {
+        "label": "ウ",
+        "text": "毒薬又は劇薬は、18歳未満の者その他安全な取扱いに不安のある者に交付してはならない。"
+      },
+      {
+        "label": "エ",
+        "text": "現在、一般用医薬品で毒薬に該当するものはない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。黒地白枠白字で表示する。　イ：正しい。白地赤枠赤字で表示する。　ウ：誤り。交付してはならないのは14歳未満の者等である。　エ：正しい。一般用医薬品に毒薬該当品はない。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_004",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "一般用医薬品のリスク区分に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "第一類医薬品は、その使用に関し特に注意が必要なものである。"
+      },
+      {
+        "label": "イ",
+        "text": "指定第二類医薬品は、第二類のうち特別の注意を要するものとして厚生労働大臣が指定するものである。"
+      },
+      {
+        "label": "ウ",
+        "text": "リスク区分は、新たな知見や副作用の発生状況等を踏まえ適宜見直される。"
+      },
+      {
+        "label": "エ",
+        "text": "第三類医薬品は、副作用等により身体の変調・不調が起こるおそれはない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。特に注意が必要な区分である。　イ：正しい。指定第二類の定義に合致する。　ウ：正しい。区分は適宜見直される。　エ：誤り。第三類でも身体の変調・不調が起こるおそれはある。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_005",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "医薬品の表示・記載に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬品の法定表示事項は、邦文でされていなければならない。"
+      },
+      {
+        "label": "イ",
+        "text": "製造販売業者の氏名又は名称及び住所は、直接の容器等への法定表示事項である。"
+      },
+      {
+        "label": "ウ",
+        "text": "要指導医薬品である旨を示す識別表示は、法定表示事項に含まれない。"
+      },
+      {
+        "label": "エ",
+        "text": "添付文書等に、虚偽又は誤解を招くおそれのある事項を記載してはならない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。邦文表示が必要である。　イ：正しい。法定表示事項に含まれる。　ウ：誤り。要指導医薬品である旨の表示は法定表示事項である。　エ：正しい。虚偽・誤解を招く記載は禁止される。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_006",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "医薬部外品・化粧品に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬部外品の製造販売には製造販売業の許可が必要で、原則として品目ごとに承認を得る。"
+      },
+      {
+        "label": "イ",
+        "text": "化粧品は、人を清潔・美化し、容貌を変え、又は皮膚・毛髪を健やかに保つために使用される。"
+      },
+      {
+        "label": "ウ",
+        "text": "化粧品には、医薬品的な効能効果を表示・標榜することは認められていない。"
+      },
+      {
+        "label": "エ",
+        "text": "衛生害虫類の防除を目的とする殺虫剤・忌避剤は、化粧品として扱われる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。許可及び品目ごとの承認が必要である。　イ：正しい。化粧品の定義に合致する。　ウ：正しい。医薬品的効能効果の標榜は不可である。　エ：誤り。防除を目的とするものは防除用医薬部外品等として扱われる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_007",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "食品及び保健機能食品に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "食品とは、医薬品及び医薬部外品以外のすべての飲食物をいう。"
+      },
+      {
+        "label": "イ",
+        "text": "特別用途食品（トクホを除く）は、内閣総理大臣の許可を受けて特別の用途に適する旨を表示する。"
+      },
+      {
+        "label": "ウ",
+        "text": "機能性表示食品は、消費者庁長官の個別の許可を受けたものである。"
+      },
+      {
+        "label": "エ",
+        "text": "栄養機能食品は、栄養成分量が国の定めた基準に適合している必要がある。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。食品衛生法上の定義に合致する。　イ：正しい。許可を受けて表示する。　ウ：誤り。機能性表示食品は届出制であり、個別の許可を受けたものではない。　エ：正しい。規格基準に適合する必要がある。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch4_008",
+    "type": "seigo_combination",
+    "category": "薬事関係法規・制度",
+    "year": 2025,
+    "text": "薬局及び医薬品の販売業に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "薬局開設や販売業の許可は、6年ごとに更新を受けなければ効力を失う。"
+      },
+      {
+        "label": "イ",
+        "text": "店舗販売業の許可では、調剤を行うことができる。"
+      },
+      {
+        "label": "ウ",
+        "text": "店舗販売業では、要指導医薬品及び一般用医薬品以外の医薬品の販売は認められない。"
+      },
+      {
+        "label": "エ",
+        "text": "配置販売業は、配置販売品目基準に適合する一般用医薬品以外の医薬品を販売してはならない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        false,
+        true,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 1,
+    "explanation": "ア：正しい。6年ごとの更新が必要である。　イ：誤り。調剤ができるのは薬局であり、店舗販売業ではできない。　ウ：正しい。それ以外の医薬品は扱えない。　エ：正しい。基準適合品以外は販売できない。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_001",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "添付文書に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "添付文書の内容は、新たな知見等に基づき必要に応じ随時改訂される。"
+      },
+      {
+        "label": "イ",
+        "text": "「してはいけないこと」には、守らないと症状の悪化や副作用・事故が起こりやすくなる事項が記載される。"
+      },
+      {
+        "label": "ウ",
+        "text": "「相談すること」には、使用前にその適否を専門家に相談すべき場合等が記載される。"
+      },
+      {
+        "label": "エ",
+        "text": "添付文書は、開封時に一度読めば十分で、保管する必要はない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 2,
+    "explanation": "ア：正しい。随時改訂される。　イ：正しい。「してはいけないこと」の趣旨に合致する。　ウ：正しい。「相談すること」の趣旨に合致する。　エ：誤り。必要なときに読めるよう、添付文書は大切に保管する。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_002",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "使用上の注意に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "重篤な副作用が掲げられる医薬品では、アレルギー既往歴のある人は使用しない旨が記載される。"
+      },
+      {
+        "label": "イ",
+        "text": "「次の部位には使用しないこと」は、局所適用薬で症状悪化等のおそれがある場合に記載される。"
+      },
+      {
+        "label": "ウ",
+        "text": "「長期連用しないこと」は、漫然と使用を続けることを避ける趣旨である。"
+      },
+      {
+        "label": "エ",
+        "text": "使用時の軽微な不快感は、すべて使用を中止すべき重篤な副作用の初期症状である。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。アレルギー既往者は使用しない旨が記載される。　イ：正しい。局所適用薬についての注意である。　ウ：正しい。漫然とした使用継続を避ける趣旨である。　エ：誤り。軽微な不快感がすべて重篤な副作用の初期症状であるとは限らない。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_003",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "医薬品の保管・取扱いに関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬品は、適切に保管しないと化学変化や雑菌の繁殖等を生じることがある。"
+      },
+      {
+        "label": "イ",
+        "text": "シロップ剤は、開封後は冷蔵庫内に保管されるのが望ましい。"
+      },
+      {
+        "label": "ウ",
+        "text": "錠剤等は、冷蔵庫内と室温の温度差で湿気を帯びるおそれがあり、冷蔵庫内保管は不適当である。"
+      },
+      {
+        "label": "エ",
+        "text": "点眼薬は、複数の使用者で使い回しても感染のおそれはない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 0,
+    "explanation": "ア：正しい。不適切な保管で変質しうる。　イ：正しい。シロップ剤は冷蔵保管が望ましい。　ウ：正しい。錠剤等の冷蔵庫保管は不適当である。　エ：誤り。点眼薬の使い回しは感染のおそれがあるため避ける。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_004",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "医薬品の副作用情報の報告に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "医薬品・医療機器等安全性情報報告制度では、登録販売者も報告を行う医薬関係者とされている。"
+      },
+      {
+        "label": "イ",
+        "text": "副作用報告では、報告様式の記入欄すべてに記入がなされる必要はない。"
+      },
+      {
+        "label": "ウ",
+        "text": "副作用の報告期限は、すべての事例で発生から30日以内と定められている。"
+      },
+      {
+        "label": "エ",
+        "text": "販売等に従事する専門家は、副作用等の情報収集に協力するよう努める必要がある。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。登録販売者も報告者に含まれる。　イ：正しい。把握可能な範囲で報告すればよい。　ウ：誤り。一律の報告期限は定められておらず、保健衛生上の危害発生・拡大防止の観点から適宜速やかに報告する。　エ：正しい。情報収集への協力が求められる。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_005",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "医薬品副作用被害救済制度に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "適正使用したにもかかわらず副作用による一定の健康被害が生じた場合に、給付が行われる。"
+      },
+      {
+        "label": "イ",
+        "text": "救済給付の請求には、医師の診断書や販売証明書等が必要となる。"
+      },
+      {
+        "label": "ウ",
+        "text": "一般用医薬品による副作用被害は、いかなる医薬品でも救済制度の対象となる。"
+      },
+      {
+        "label": "エ",
+        "text": "給付費は、製造販売業者から納付される拠出金が充てられる。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。適正使用が前提である。　イ：正しい。診断書・販売証明書等が必要である。　ウ：誤り。殺虫剤・殺鼠剤や一部の医薬品等、救済対象とならないものがある。　エ：正しい。製造販売業者の拠出金が財源である。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_006",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "医薬品の安全性情報に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "緊急安全性情報は、緊急かつ重大な注意喚起や使用制限が必要な場合に作成される。"
+      },
+      {
+        "label": "イ",
+        "text": "緊急安全性情報は、A4サイズの黄色地で、イエローレターとも呼ばれる。"
+      },
+      {
+        "label": "ウ",
+        "text": "安全性速報は、A4サイズの青色地で、ブルーレターとも呼ばれる。"
+      },
+      {
+        "label": "エ",
+        "text": "一般用かぜ薬の使用による間質性肺炎は、これまで一切報告されていない。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        false
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。緊急時に作成される。　イ：正しい。イエローレターと呼ばれる。　ウ：正しい。ブルーレターと呼ばれる。　エ：誤り。一般用かぜ薬による間質性肺炎が報告され、注意喚起がなされている。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_007",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "医薬品の適正使用のための啓発活動に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "「6・26国際麻薬乱用撲滅デー」の普及を目的に「ダメ。ゼッタイ。」普及運動が毎年実施される。"
+      },
+      {
+        "label": "イ",
+        "text": "薬物乱用・薬物依存は違法薬物によるもので、一般用医薬品で生じることはない。"
+      },
+      {
+        "label": "ウ",
+        "text": "医薬品の適正使用の啓発は、小中学生のうちからの啓発が重要である。"
+      },
+      {
+        "label": "エ",
+        "text": "登録販売者は、適正使用の啓発活動に積極的に参加・協力することが期待される。"
+      }
+    ],
+    "seigo_options": [
+      [
+        false,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        true,
+        false
+      ],
+      [
+        true,
+        false,
+        true,
+        true
+      ]
+    ],
+    "correctIndex": 4,
+    "explanation": "ア：正しい。毎年実施されている。　イ：誤り。一般用医薬品でも乱用・依存が生じうる。　ウ：正しい。早期からの啓発が重要である。　エ：正しい。啓発活動への協力が期待される。",
+    "difficulty": 3
+  },
+  {
+    "id": "hard_ch5_008",
+    "type": "seigo_combination",
+    "category": "医薬品の適正使用・安全対策",
+    "year": 2025,
+    "text": "一般用医薬品の適正使用・受診勧奨に関する次の記述の正誤について、正しい組み合わせを一つ選びなさい。",
+    "statements": [
+      {
+        "label": "ア",
+        "text": "一般用医薬品で対処可能な範囲は使用者により変わり、乳幼児や妊婦等では限られてくる。"
+      },
+      {
+        "label": "イ",
+        "text": "一定期間使用しても症状の改善がみられない場合は、医療機関の受診が必要である。"
+      },
+      {
+        "label": "ウ",
+        "text": "高熱や激しい腹痛等、症状が重いときも、まず一般用医薬品で経過観察するのが優先される。"
+      },
+      {
+        "label": "エ",
+        "text": "慢性疾患を持つ者では、一般用医薬品が症状悪化や治療の妨げとなることがある。"
+      }
+    ],
+    "seigo_options": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        true
+      ],
+      [
+        true,
+        true,
+        false,
+        true
+      ],
+      [
+        false,
+        true,
+        false,
+        false
+      ]
+    ],
+    "correctIndex": 3,
+    "explanation": "ア：正しい。対処可能な範囲は使用者により異なる。　イ：正しい。改善しない場合は受診勧奨する。　ウ：誤り。症状が重い場合は最初から医療機関の受診が望ましい。　エ：正しい。慢性疾患では悪化・治療妨害のおそれがある。",
+    "difficulty": 3
+  }
+]

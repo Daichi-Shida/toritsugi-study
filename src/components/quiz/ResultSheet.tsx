@@ -6,6 +6,8 @@ import BeanCharacter from "@/components/character/BeanCharacter";
 import MaryCharacter from "@/components/character/MaryCharacter";
 import AdultMaryCharacter from "@/components/character/AdultMaryCharacter";
 import SamuraiCharacter from "@/components/character/SamuraiCharacter";
+import GoldenBeanSamuraiCharacter from "@/components/character/GoldenBeanSamuraiCharacter";
+import CatCharacter from "@/components/character/CatCharacter";
 
 interface Props {
   show: boolean;
@@ -20,7 +22,7 @@ interface Props {
 }
 
 const STAGE_EMOJI: Record<number, string> = {
-  1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️",
+  1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️", 8: "🫛", 9: "🐱",
 };
 
 // ───── 動きパターン（共通・各5種類） ─────
@@ -90,11 +92,21 @@ const LINES: Record<CharacterStage, { correct: string[]; wrong: string[] }> = {
     correct: ["うまみ。。", "腹ペコ侍！", "太郎侍参上", "寿司食いたし", "侘び寂び正解"],
     wrong:   ["ねむみ。。。", "かわたい", "闇の刻", "侍ロス", "もぐもぐ虚無"],
   },
+  8: {
+    // 豆侍：金色に光る豆の侍。変な名前・語感
+    correct: ["太郎次郎！", "うまたにえん", "豆太郎、推参", "金豆まいったか", "ぷりぷり斬り", "豆ノ介、正解", "黄金まめ侍"],
+    wrong:   ["まめ次郎、無念", "うまたにえん…", "煮豆になる…", "さや落ち侍", "豆ロス候", "金欠まめ侍"],
+  },
+  9: {
+    // ねこさん：最上位レア。にゃー多めの可愛いセリフ
+    correct: ["にゃー！", "にゃ♪", "にゃにゃっ✨", "にゃんと正解", "ごろにゃ〜", "みゃ〜お", "にゃはは！", "にゃ、お見事", "ふみゃ♪", "にゃんだふる"],
+    wrong:   ["にゃ…ん？", "しょんにょり", "にゃーん…", "みゃう…", "ぷいっ。", "にゃんも…", "ねむにゃい…", "ごめんにゃ"],
+  },
 };
 
 const HEADER: Record<"correct" | "wrong", Record<CharacterStage, string>> = {
-  correct: { 1: "✦ 正解！", 2: "✦ 正解！", 3: "✦ 正解！", 4: "✦ 正解！", 5: "✦ 正解！", 6: "✦ CORRECT", 7: "✦ 見事なり！" },
-  wrong:   { 1: "もう一歩…", 2: "もう一歩…", 3: "もう一歩…", 4: "もう一歩…", 5: "もう一歩…", 6: "INCORRECT", 7: "未熟者…" },
+  correct: { 1: "✦ 正解！", 2: "✦ 正解！", 3: "✦ 正解！", 4: "✦ 正解！", 5: "✦ 正解！", 6: "✦ CORRECT", 7: "✦ 見事なり！", 8: "✦ 黄金の正解！", 9: "✦ にゃ正解！" },
+  wrong:   { 1: "もう一歩…", 2: "もう一歩…", 3: "もう一歩…", 4: "もう一歩…", 5: "もう一歩…", 6: "INCORRECT", 7: "未熟者…", 8: "豆ながら無念…", 9: "おしいにゃ…" },
 };
 
 // ハッシュ関数（question.id + selectedIndex から決定的にランダム選択）
@@ -119,7 +131,9 @@ function CharacterAvatar({ stage, move }: { stage: CharacterStage; move: MoveSpe
       transition={{ duration: move.duration, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.6 }}
       style={{ transformOrigin: "50% 80%" }}
     >
-      {stage === 7 ? <SamuraiCharacter size={64} /> :
+      {stage === 9 ? <CatCharacter size={64} /> :
+       stage === 8 ? <GoldenBeanSamuraiCharacter size={64} /> :
+       stage === 7 ? <SamuraiCharacter size={64} /> :
        stage === 6 ? <AdultMaryCharacter size={64} /> :
        stage === 5 ? <MaryCharacter size={64} /> :
        stage === 1 ? <BeanCharacter size={64} /> :
@@ -135,10 +149,11 @@ export default function ResultSheet({ show, question, selectedIndex, onNext, onC
   // ランダム選択：question.id + selectedIndex でシード
   const seed = `${question.id}_${selectedIndex}`;
   const moveIndex = hashPick(seed, 5);
-  const lineIndex = hashPick(seed + "_line", 5);
+  const linePool = LINES[characterStage][isCorrect ? "correct" : "wrong"];
+  const lineIndex = hashPick(seed + "_line", linePool.length);
 
   const move = (isCorrect ? CORRECT_MOVES : WRONG_MOVES)[moveIndex];
-  const speechLine = LINES[characterStage][isCorrect ? "correct" : "wrong"][lineIndex];
+  const speechLine = linePool[lineIndex];
   const headerText = HEADER[isCorrect ? "correct" : "wrong"][characterStage];
 
   // 大人メアリー（Lv6）の英単語表現はちょっと大きく見せる

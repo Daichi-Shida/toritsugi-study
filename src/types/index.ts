@@ -94,7 +94,7 @@ export interface StudySession {
 }
 
 // ===== キャラクター・進捗 =====
-export type CharacterStage = 1 | 2 | 3 | 4 | 5 | 6 | 7; // 1=見習い → 7=侍（レア）
+export type CharacterStage = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // 1=見習い → 7=メアリー侍 → 8=豆侍 → 9=ねこさん（最上位レア）
 
 export interface CharacterStatus {
   stage: CharacterStage;
