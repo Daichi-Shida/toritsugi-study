@@ -2,3 +2,6 @@
 .next
 node_modules
 *.env*.local
+
+# 字幕取得の実行ログ
+docs/transcripts/logs/
