@@ -1,6 +1,40 @@
 # セッション記憶 — 登録販売者アプリ開発状況
 
-最終更新: 2026-04-06（第4セッション）
+最終更新: 2026-06-28（妻フィードバック対応セッション）
+
+---
+
+## 2026-06-28 セッション（妻フィードバック対応：難化＋上位キャラ＋字幕収集）
+
+### 背景（妻の声）
+- 「問題が簡単」／「ステータスがメアリー侍(Lv7)でカンスト」
+
+### 1. 上位キャラ2体を追加（Lv上限 7→9）
+- しきい値: Lv8=8000 / Lv9=12000 EXP（`src/lib/score.ts` STAGE_THRESHOLDS）
+- **Lv8「豆侍」** `src/components/character/GoldenBeanSamuraiCharacter.tsx`
+  - 金色に光るそら豆の侍SVG・gold系レア演出・変なセリフ（太郎次郎/うまたにえん/豆太郎 等）
+- **Lv9「ねこさん」** `src/components/character/CatCharacter.tsx`
+  - 可愛い子猫SVG・pink系レア演出・「にゃー」系セリフ（正解10種/不正解8種）
+- 統合先: `types/index.ts`(CharacterStage 1-9), `score.ts`, `CharacterDisplay.tsx`, `ResultSheet.tsx`(LINES/HEADER, lineIndexを配列長準拠に変更), `LevelUpModal.tsx`, `StageBackground.tsx`
+
+### 2. 難化＋問題拡充（過去問形式の難問）
+- 分析: 既存332問の71%が単純4択＝消去法が効いて簡単。本試験主流は「正誤組み合わせ」
+- **正誤組み合わせの難問40問（難易度3・全5章×8問）を追加** → 332→**372問**
+- `src/data/questions/hard_questions.json`（id: hard_chN_NNN）/ index.ts・validate_questions.py に登録
+- 生成器 `scripts/gen_hard_questions.py`: 各文の正誤＋解説の構造化データから seigo_options（正解＋撹乱4肢）と correctIndex を決定的生成。**修正時はこの.pyを編集して再実行**
+- 検証 0エラー・type-check/build OK
+
+### 3. プルメリア字幕の収集基盤強化＋収集
+- `scripts/fetch_plumeria_transcripts.py` を改良: 新しい順・RequestBlockedは再試行対象・小バッチ(LIMIT)・**IPブロック検知で即停止**・進捗は docs/transcripts/logs/ に退避（標準出力は集計のみ＝トークン節約）
+- 字幕 57→**80本**（残362）。YouTubeは約20数連続リクエストで `RequestBlocked`、回復に数十分以上必要 → 時間を空けた小バッチ再実行が必須
+  - 再開: `LIMIT=12 python3 scripts/fetch_plumeria_transcripts.py`
+- `scripts/prep_plumeria.py`: 取得字幕を章分類し1本ずつ本文を取り出す問題作成用ヘルパー（`list|stats|show <idx|id>`）。「過去問チャレンジ」「2026 Guidebook Revision」動画が難問・最新法改正の好素材
+- ユーザー判断で収集は80本で一旦停止
+
+### デプロイ
+- commit `694354b`（キャラ＋難問40問）→ Vercel本番反映済（home/quiz 200確認）
+- commit `b0ef4dc`（字幕収集基盤＋80本＋prepツール）
+- 残課題: 字幕の続き収集（IP回復後・小バッチ）／取得済み素材から過去問形式の難問を継続追加
 
 ---
 
