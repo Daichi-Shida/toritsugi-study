@@ -20,14 +20,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "src" / "data" / "questions"
 FILES = [
-    "all.json",
-    "seigo_sample.json",
-    "quality_questions.json",
-    "plumeria_questions.json",
+    "kakomon_r6_tokyo.json",
+    "kakomon_r5_tokyo.json",
+    "kakomon_r4_tokyo.json",
     "r8_revision_questions.json",
     "r8_deep_questions.json",
-    "plumeria_v2_questions.json",
-    "hard_questions.json",
 ]
 
 VALID_CATEGORIES = {

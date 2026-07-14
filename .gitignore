@@ -5,3 +5,6 @@ node_modules
 
 # 字幕取得の実行ログ
 docs/transcripts/logs/
+
+# 過去問の生データHTML（gen_kakomon_questions.pyで再取得可能・容量が大きいため除外）
+scripts/kakomon_raw/
