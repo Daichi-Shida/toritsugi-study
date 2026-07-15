@@ -13,10 +13,19 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW_ROOT = ROOT / "scripts" / "kakomon_raw"
 
 # (生データディレクトリ, 出力ファイル名, 年, ID接頭辞, 都道府県ラベル)
+# 登録販売者試験はブロック単位で共通問題のため、問題文の重複を避けるには
+# 「ブロックごとに1県」を選び年度を変えて集める。SOURCES は先頭が優先され、
+# 後方ソースの重複問題（同一設問文）は生成時に除外される（東京＝既存を温存）。
+# (生データDir, 出力ファイル, 年, ID接頭辞, ラベル)
 SOURCES = [
     ("r6_tokyo", "kakomon_r6_tokyo.json", 2024, "kk_r6t", "東京都（南関東）"),
     ("r5_tokyo", "kakomon_r5_tokyo.json", 2023, "kk_r5t", "東京都（南関東）"),
     ("r4_tokyo", "kakomon_r4_tokyo.json", 2022, "kk_r4t", "東京都（南関東）"),
+    ("r6_hokkaidou", "kakomon_r6_hokkaidou.json", 2024, "kk_r6h", "北海道（北海道・東北）"),
+    ("r6_ibaraki", "kakomon_r6_ibaraki.json", 2024, "kk_r6ib", "茨城県（北関東・甲信越）"),
+    ("r6_aiti", "kakomon_r6_aiti.json", 2024, "kk_r6a", "愛知県（東海・北陸）"),
+    ("r6_kansaikouikirengou", "kakomon_r6_kansai.json", 2024, "kk_r6k", "関西広域連合"),
+    ("r6_hukuoka", "kakomon_r6_hukuoka.json", 2024, "kk_r6f", "福岡県（九州・沖縄）"),
 ]
 
 C1 = "医薬品に共通する特性と基本的な知識"
@@ -25,15 +34,51 @@ C3 = "主な医薬品とその作用"
 C4 = "薬事関係法規・制度"
 C5 = "医薬品の適正使用・安全対策"
 
-# 南関東の出題順 → 章マッピング
-def chapter_of(n: int) -> str:
-    if 1 <= n <= 20:   return C1
-    if 21 <= n <= 40:  return C2
-    if 41 <= n <= 60:  return C4   # 法規は問41-60
-    if 61 <= n <= 100: return C3   # 主な医薬品は問61-100
-    return C5
 
-LABEL_MAP = {"a": "ア", "b": "イ", "c": "ウ", "d": "エ", "e": "オ"}
+def block_chapter_map(raw_dir: Path) -> dict:
+    """ブロックごとの章構成（出題順）をページの目次(mokuzi)リンクから読み取り、
+    通し問番号→章名 の辞書を返す。ブロックにより章の並び順が異なる
+    （南関東=1,2,4,3,5／北海道=1,3,2,4,5 等）ため位置固定では誤分類になる。
+    章のサイズは全国共通（主な医薬品=40問・他=20問）。"""
+    page = None
+    for n in range(1, 121):
+        f = raw_dir / f"{n:03d}.html"
+        if f.exists() and f.stat().st_size > 2000:
+            page = f
+            break
+    if page is None:
+        return {}
+    t = page.read_text(encoding="utf-8", errors="replace")
+    secs = []
+    for m in re.finditer(r'mokuzi-(\d)\.htm"[^>]*>([^<]+)</a>', t):
+        k = int(m.group(1))
+        if not any(s[0] == k for s in secs):
+            secs.append((k, m.group(2)))
+    secs.sort()
+    order = []
+    for _, txt in secs:
+        if "主な医薬品" in txt:
+            order.append((C3, 40))
+        elif "人体" in txt:
+            order.append((C2, 20))
+        elif "法規" in txt or "薬事" in txt:
+            order.append((C4, 20))
+        elif "適正使用" in txt or "安全対策" in txt:
+            order.append((C5, 20))
+        else:
+            order.append((C1, 20))
+    mp, pos = {}, 1
+    for c, size in order:
+        for _ in range(size):
+            mp[pos] = c
+            pos += 1
+    return mp
+
+# 選択肢ラベルは県により a/b/c/d 形式と ア/イ/ウ/エ 形式の2通りがある。
+# 出力は常に日本語ラベルへ正規化する（ア〜オはそのまま）。
+LABEL_MAP = {"a": "ア", "b": "イ", "c": "ウ", "d": "エ", "e": "オ",
+             "ア": "ア", "イ": "イ", "ウ": "ウ", "エ": "エ", "オ": "オ"}
+LABEL_ORDER = ["a", "b", "c", "d", "e", "ア", "イ", "ウ", "エ", "オ"]
 
 # 手動で書き起こした解説本文（判定語「正しい/誤った記述です。」の“後ろ”に続く説明）。
 # 出典解説が画面表示のリスト（掲示事項一覧など）や他選択肢を「先の〜」と参照しており、
@@ -170,6 +215,17 @@ _DROP_SUBSTR = (
     "すべて出ます", "ふつうに出", "全国的に", "正面から出", "出ると言",
     "繰り返しますが", "太文字", "感覚的に", "理屈を追う", "意外に",
     "いいじゃん", "そうすっと", "いきなり", "出るです", "今後も出る",
+    # 追加：出題頻度メタ・章跨ぎの自己参照・曖昧な口語
+    "こういう記述", "出るようになって", "基本知識」で",
+    "変えられそう", "作って売った", "把握するといい", "突っ込ま",
+    # 追加：出題メタ・砕けた助言/断定（新ブロックで多い）
+    "からの出題", "出題です", "ひっかけ", "くらいです", "問われた",
+    "無視して", "怪しい", "間違ってはいけない", "間違えてはいけない",
+    "難問", "ちゃいます", "しちゃう", "なんです", "でいいです",
+    "ていいです", "といいです", "ばいいです", "たほうがいい",
+    "ておけばいい", "ていればいい", "すればいい", "出るようにな",
+    "出題実績", "近年になって", "意味ない", "仕方ない", "しかたない",
+    "復習まで", "言っても",
 )
 # 実質情報がなく学習を促すだけの文（末尾が下記）は削除。
 _ADVICE_END = ("おきましょう。", "ください。", "ましょう。", "しましょう。")
@@ -217,14 +273,26 @@ def _normalize_sentence(s: str) -> str:
     # 口語的な語尾（〜ですよね／〜ですね／〜でしょう）を常態の丁寧語に寄せる
     s = re.sub(r"です[よね]+ー?。$", "です。", s)
     s = re.sub(r"ます[よね]+ー?。$", "ます。", s)
+    s = re.sub(r"よねー?。$", "。", s)          # 〜でしたよね。/減りませんよね。→ 常体丁寧
     s = re.sub(r"でしょうね。$", "です。", s)
     s = re.sub(r"でしょう。$", "です。", s)
+    # 口語表現を書き言葉へ：〜わけです→のです、〜じゃない→ではない
+    s = re.sub(r"わけです。$", "のです。", s)
+    s = s.replace("じゃないです", "ではありません").replace("じゃない", "ではない")
+    s = s.replace("じゃなく", "ではなく")
     # 「でしょう→です」変換等で生じうる崩れた終止（動詞の辞書形＋です）を丁寧語に直す
     s = re.sub(r"するです。$", "します。", s)
     s = re.sub(r"あるです。$", "あります。", s)
     s = re.sub(r"出るです。$", "出ます。", s)
     s = re.sub(r"いるです。$", "います。", s)
     s = re.sub(r"なるです。$", "なります。", s)
+    # 対応する開き括弧のない閉じ括弧（出典の箇条書き記号「ⅱ）」やトリム跡）を除去。
+    # 均衡した（…）は count が等しく while が回らないので壊さない。
+    while s.count("）") > s.count("（"):
+        s = s.replace("）", "", 1)
+    s = re.sub(r"。。+", "。", s).strip("、　 ")
+    if s and not s.endswith(("。", "！", "？", "」", "）")):
+        s += "。"
     return s.strip()
 
 
@@ -249,6 +317,9 @@ def clean_reason(reason: str, maxlen: int = 240) -> str:
             continue
         ns = _normalize_sentence(s)
         if not ns:
+            continue
+        # 正規化（でしょう→です 等）で助言・メタ語尾が生じることがあるため再判定
+        if not any(k in ns for k in _KEEP_HINT) and any(x in ns for x in _DROP_SUBSTR):
             continue
         # 引用符が閉じていない文（元データの途中欠落）は採用しない
         if ns.count("「") != ns.count("」"):
@@ -276,7 +347,7 @@ def parse_question(raw_dir: Path, n: int):
 
     # 各文の正誤サマリ： 「a」は「正」です
     seigo = {}
-    for mm in re.finditer(r"「([a-e])」は「([正誤])」", body):
+    for mm in re.finditer(r"「([a-eア-オ])」は「([正誤])」", body):
         seigo[mm.group(1)] = (mm.group(2) == "正")
     if len(seigo) < 3:
         return None
@@ -285,7 +356,7 @@ def parse_question(raw_dir: Path, n: int):
     stmts = {}
     reasons = {}
     # 「選択肢a … 選択肢b …」の順にブロック分割
-    blocks = re.split(r"(?:^|\n)\s*選択肢([a-e])\s*\n", body)
+    blocks = re.split(r"(?:^|\n)\s*選択肢([a-eア-オ])\s*\n", body)
     # blocks: [pre, 'a', blockA, 'b', blockB, ...]
     for i in range(1, len(blocks) - 1, 2):
         lbl = blocks[i]
@@ -303,7 +374,7 @@ def parse_question(raw_dir: Path, n: int):
         rest = blk[tm2.end():].split("よって、選択肢")[0]
         reasons[lbl] = clean_reason(join_text(rest))
 
-    labels_sorted = [l for l in ["a", "b", "c", "d", "e"] if l in seigo]
+    labels_sorted = [l for l in LABEL_ORDER if l in seigo]
     # 本文が取れていない文があるものはスキップ（画像依存型）
     if any(l not in stmts or len(stmts[l]) < 10 for l in labels_sorted):
         return None
@@ -346,11 +417,20 @@ def make_distractors(correct, qid):
     return out
 
 
-def build_source(raw_name, out_name, year, prefix, pref_label):
+def _dup_key(statements):
+    """設問の重複判定キー：各文（空白除去）の集合。ブロックが違っても同一設問文なら一致。"""
+    return frozenset(re.sub(r"\s+", "", s["text"]) for s in statements)
+
+
+def build_source(raw_name, out_name, year, prefix, pref_label, seen_keys=None):
     raw_dir = RAW_ROOT / raw_name
     out_path = ROOT / "src" / "data" / "questions" / out_name
+    chap_map = block_chapter_map(raw_dir)
+    if seen_keys is None:
+        seen_keys = set()
     questions = []
     skipped = []
+    dup = 0
     for n in range(1, 121):
         p = parse_question(raw_dir, n)
         if p is None:
@@ -359,6 +439,11 @@ def build_source(raw_name, out_name, year, prefix, pref_label):
         jp_labels = [LABEL_MAP[l] for l in labels_src]
         statements = [{"label": jp_labels[i], "text": p["stmts"][labels_src[i]]}
                       for i in range(len(labels_src))]
+        # 別ブロックとの重複設問（同一文の集合）は除外。先行ソース（東京）を優先。
+        key = _dup_key(statements)
+        if key in seen_keys:
+            dup += 1; continue
+        seen_keys.add(key)
         correct = [p["seigo"][l] for l in labels_src]
         qid = f"{prefix}_{n:03d}"
         if qid in EXCLUDE_IDS:
@@ -383,7 +468,7 @@ def build_source(raw_name, out_name, year, prefix, pref_label):
             body = verdict_word + reason
             expl_parts.append(f"{jp}（{verdict}）{body}")
         explanation = "　".join(expl_parts)
-        cat = chapter_of(n)
+        cat = chap_map.get(n) or C3
         topic = p["topic"]
         text = (f"{topic}に関する次の記述について、正しい正誤の組み合わせを一つ選びなさい。"
                 if topic else "次の記述について、正しい正誤の組み合わせを一つ選びなさい。")
@@ -409,7 +494,8 @@ def build_source(raw_name, out_name, year, prefix, pref_label):
         assert 0 <= q["correctIndex"] < 5
         assert len(q["seigo_options"][q["correctIndex"]]) == len(q["statements"])
     ch = Counter(q["category"] for q in questions)
-    print(f"[{raw_name}] 生成 {len(questions)} 問 -> {out_name}")
+    print(f"[{raw_name}] 生成 {len(questions)} 問 -> {out_name}"
+          + (f"（重複除外 {dup}）" if dup else ""))
     print("  章別:", {k[:6]: v for k, v in ch.items()})
     print(f"  スキップ {len(skipped)} 問(画像依存の穴埋め等): {skipped}")
     return len(questions)
@@ -417,8 +503,9 @@ def build_source(raw_name, out_name, year, prefix, pref_label):
 
 def build():
     total = 0
+    seen_keys = set()
     for raw_name, out_name, year, prefix, pref_label in SOURCES:
-        total += build_source(raw_name, out_name, year, prefix, pref_label)
+        total += build_source(raw_name, out_name, year, prefix, pref_label, seen_keys)
     print(f"\n合計 {total} 問 生成・自己検証 OK")
 
 

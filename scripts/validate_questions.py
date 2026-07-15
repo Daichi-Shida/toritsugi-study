@@ -23,6 +23,11 @@ FILES = [
     "kakomon_r6_tokyo.json",
     "kakomon_r5_tokyo.json",
     "kakomon_r4_tokyo.json",
+    "kakomon_r6_hokkaidou.json",
+    "kakomon_r6_ibaraki.json",
+    "kakomon_r6_aiti.json",
+    "kakomon_r6_kansai.json",
+    "kakomon_r6_hukuoka.json",
     "r8_revision_questions.json",
     "r8_deep_questions.json",
 ]
