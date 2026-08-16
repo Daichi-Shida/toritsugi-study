@@ -279,7 +279,9 @@ def load_reasons(raw_dir: str, n: int) -> dict[str, tuple[bool | None, str]]:
     if not path.exists():
         return {}
     txt = GK.clean_text(path)
-    body = txt.split("難易度コメント")[-1].split("もし、最終解答")[0]
+    body = txt.split("難易度コメント")[-1]
+    # 解説のあとに続く「次の問題へ」等のナビ文言を落とす
+    body = re.split(r"(?:もし、最終解答|さて、最終解答|>>>|次の問題へ)", body)[0]
     out: dict[str, tuple[bool | None, str]] = {}
     blocks = re.split(r"(?:^|\n)\s*選択肢\s*([a-eア-オ1-5１-５])\s*\n", body)
     for i in range(1, len(blocks) - 1, 2):
@@ -298,12 +300,13 @@ def load_reasons(raw_dir: str, n: int) -> dict[str, tuple[bool | None, str]]:
         reason = GK.clean_reason(GK.join_text(rest))
         if reason:
             out[GK.LABEL_MAP.get(key, key)] = (verdict, reason)
-    if not out:  # 選択肢ごとの解説がない型（穴埋め等）は「解説」節をまるごと使う
-        m = re.search(r"解説\s*(.+)", body, flags=re.S)
-        if m:
-            reason = GK.clean_reason(GK.join_text(m.group(1)), maxlen=400)
-            if reason:
-                out["_"] = (None, reason)
+    # 単文5択や穴埋め型は選択肢ごとではなく「解説」節にまとめて書かれている。
+    # 選択肢別の理由が取れた場合も、補足として拾っておく。
+    m = re.search(r"解説\s*(.+)", body, flags=re.S)
+    if m:
+        reason = GK.clean_reason(GK.join_text(m.group(1)), maxlen=400)
+        if reason:
+            out.setdefault("_", (None, reason))
     return out
 
 
@@ -343,10 +346,17 @@ def build_explanation(q: dict, correct_index: int, reasons: dict, qid: str,
 
     if q["type"] == "simple_select":
         parts = [f"正解は{correct_index + 1}です。"]
+        per_option = False
         for i, _opt in enumerate(q["options"]):
             got = reasons.get(str(i + 1)) or reasons.get("１２３４５"[i])
             if got and got[1]:
                 parts.append(f"{i + 1}：{got[1]}")
+                per_option = True
+        # 選択肢ごとの理由が無い出典は「解説」節にまとめ書きされている
+        if not per_option:
+            got = reasons.get("_")
+            if got and got[1]:
+                parts.append(got[1])
         return "　".join(parts)
 
     # 穴埋め
