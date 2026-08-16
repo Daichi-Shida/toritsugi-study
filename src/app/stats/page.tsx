@@ -8,7 +8,8 @@ import type { QuestionCategory, UserProgress } from "@/types";
 import { CATEGORY_CHAPTER } from "@/types";
 import { loadProgress } from "@/lib/storage";
 import { calcStreakDays } from "@/lib/score";
-import { ALL_QUESTIONS, QUESTION_BY_ID } from "@/data/questions";
+import { getCategoryOf, getQuestionSummary } from "@/lib/questionIndex";
+import { ALL_QUESTIONS } from "@/data/questions";
 
 const CATEGORIES = Object.keys(CATEGORY_CHAPTER) as QuestionCategory[];
 
@@ -82,16 +83,21 @@ export default function StatsPage() {
 
   const chapterStats = CATEGORIES.map((cat) => {
     const catQs = ALL_QUESTIONS.filter((q) => q.category === cat);
+    // 正答率は学習記録側から数える。出題プールを入れ替えても、外した問題の
+    // 記録は retired_index 経由で章が分かるので、これまでの数字がそのまま残る。
     let attempts = 0;
     let correct = 0;
+    for (const r of recordsArr) {
+      if (r.totalAttempts <= 0) continue;
+      if (getCategoryOf(r.questionId) !== cat) continue;
+      attempts += r.totalAttempts;
+      correct += r.correctAttempts;
+    }
+    // カバー率は現行プールに対する進み具合
     let coveredQuestions = 0;
     for (const q of catQs) {
       const r = records[q.id];
-      if (r && r.totalAttempts > 0) {
-        attempts += r.totalAttempts;
-        correct += r.correctAttempts;
-        coveredQuestions++;
-      }
+      if (r && r.totalAttempts > 0) coveredQuestions++;
     }
     const rate = attempts > 0 ? Math.round((correct / attempts) * 100) : null;
     const coverage = catQs.length > 0 ? Math.round((coveredQuestions / catQs.length) * 100) : 0;
@@ -106,12 +112,16 @@ export default function StatsPage() {
 
   const weakRanking = recordsArr
     .filter((r) => r.totalAttempts >= 2 && r.correctAttempts / r.totalAttempts < 0.5)
-    .map((r) => ({
-      record: r,
-      question: QUESTION_BY_ID[r.questionId],
-      rate: Math.round((r.correctAttempts / r.totalAttempts) * 100),
-    }))
-    .filter((x) => x.question)
+    .flatMap((r) => {
+      // 出題プールから外した問題も、苦手リストからは消さずに表示する
+      const question = getQuestionSummary(r.questionId);
+      if (!question) return [];
+      return [{
+        record: r,
+        question,
+        rate: Math.round((r.correctAttempts / r.totalAttempts) * 100),
+      }];
+    })
     .sort((a, b) => a.rate - b.rate || b.record.totalAttempts - a.record.totalAttempts)
     .slice(0, 10);
 

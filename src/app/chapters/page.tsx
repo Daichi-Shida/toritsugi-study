@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import type { QuestionCategory, UserProgress } from "@/types";
 import { CATEGORY_CHAPTER, CATEGORY_QUESTION_COUNT } from "@/types";
 import { loadProgress } from "@/lib/storage";
+import { getCategoryOf } from "@/lib/questionIndex";
 import { ALL_QUESTIONS } from "@/data/questions";
 
 const CATEGORY_DESCRIPTION: Record<QuestionCategory, string> = {
@@ -38,18 +39,25 @@ export default function ChaptersPage() {
   function getCategoryStats(cat: QuestionCategory) {
     const catQuestions = ALL_QUESTIONS.filter((q) => q.category === cat);
     const total = catQuestions.length;
-    if (!progress) return { attempted: 0, correct: 0, total, rate: null };
+    if (!progress) return { attempted: 0, correct: 0, total, rate: null, covered: 0 };
+    // 正答率は「解いた記録」から数える。出題プールから外した問題の記録も
+    // 章さえ分かれば数に入れるので、問題を入れ替えても達成度の数字は動かない。
     let attempted = 0;
     let correct = 0;
+    for (const r of Object.values(progress.questionRecords)) {
+      if (r.totalAttempts <= 0) continue;
+      if (getCategoryOf(r.questionId) !== cat) continue;
+      attempted++;
+      if (r.correctAttempts / r.totalAttempts >= 0.5) correct++;
+    }
+    // カバー率だけは現行プールに対する進み具合なので、プール内の問題で数える
+    let covered = 0;
     for (const q of catQuestions) {
       const r = progress.questionRecords[q.id];
-      if (r && r.totalAttempts > 0) {
-        attempted++;
-        if (r.correctAttempts / r.totalAttempts >= 0.5) correct++;
-      }
+      if (r && r.totalAttempts > 0) covered++;
     }
     const rate = attempted > 0 ? Math.round((correct / attempted) * 100) : null;
-    return { attempted, correct, total, rate };
+    return { attempted, correct, total, rate, covered };
   }
 
   function getRateBg(rate: number | null) {
@@ -90,7 +98,7 @@ export default function ChaptersPage() {
         {CATEGORIES.map((cat, idx) => {
           const stats = getCategoryStats(cat);
           const examCount = CATEGORY_QUESTION_COUNT[cat];
-          const coverage = stats.total > 0 ? Math.round((stats.attempted / stats.total) * 100) : 0;
+          const coverage = stats.total > 0 ? Math.round((stats.covered / stats.total) * 100) : 0;
 
           return (
             <motion.div
@@ -129,7 +137,7 @@ export default function ChaptersPage() {
                   </div>
                   <p className="text-[10px] text-mocha-400 tracking-wide">
                     {stats.attempted > 0
-                      ? `解答 ${stats.attempted}/${stats.total}（カバー率 ${coverage}%）`
+                      ? `解答 ${stats.attempted}問（新しい${stats.total}問のカバー率 ${coverage}%）`
                       : `未学習 ${stats.total}問`}
                   </p>
                 </div>

@@ -8,3 +8,12 @@ docs/transcripts/logs/
 
 # 過去問の生データHTML（gen_kakomon_questions.pyで再取得可能・容量が大きいため除外）
 scripts/kakomon_raw/
+
+# 手引きPDFと抽出テキスト（厚労省サイトから再取得可能・extract_tebiki.pyで再生成）
+docs/tebiki/*.pdf
+docs/tebiki/*.txt
+docs/tebiki/diff_r7_r8_filtered.txt
+docs/tebiki/ch4_struct.md
+
+# 学習記録の保全を検証するための一時データ（make_stats_fixture.pyで再生成）
+scripts/stats_fixture.json

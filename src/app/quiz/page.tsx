@@ -7,7 +7,7 @@ import type { Question, UserProgress, QuestionCategory, StudySession } from "@/t
 import { CATEGORY_CHAPTER } from "@/types";
 import { loadProgress, saveProgress, addSession, toggleBookmark } from "@/lib/storage";
 import { updateRecord, getDueQuestionIds } from "@/lib/srs";
-import { calcExperience, calcPassExpectation, updateCharacter } from "@/lib/score";
+import { calcExperience, calcPassExpectation, updateCharacter, PASS_EXPECTATION_TARGET } from "@/lib/score";
 import QuizCard from "@/components/quiz/QuizCard";
 import ResultSheet from "@/components/quiz/ResultSheet";
 import SessionComplete from "@/components/quiz/SessionComplete";
@@ -127,7 +127,7 @@ function QuizContent() {
       const newRecord = updateRecord(existing, currentQuestion.id, isCorrect);
       const exp = calcExperience(isCorrect, currentQuestion.difficulty);
       const newRecords = { ...progress.questionRecords, [currentQuestion.id]: newRecord };
-      const passExp = calcPassExpectation(newRecords, ALL_QUESTIONS.length);
+      const passExp = calcPassExpectation(newRecords, PASS_EXPECTATION_TARGET);
       const newCharacter = updateCharacter(progress.character, exp, passExp);
 
       const newProgress: UserProgress = { ...progress, questionRecords: newRecords, character: newCharacter };

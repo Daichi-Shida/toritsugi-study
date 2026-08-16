@@ -24,6 +24,15 @@ export const STAGE_NAMES: Record<CharacterStage, string> = {
 const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3000, 5000, 8000, 12000]; // 各ステージに必要な経験値
 
 /**
+ * 合格期待値のカバレッジを測る分母（問題数）
+ *
+ * 出題プールの実数を分母にすると、問題を入れ替えて総数が増えるたびに
+ * 合格期待値が勝手に下がってしまう。学習の達成度は問題の入れ替えとは
+ * 無関係であるべきなので、2026-08の入れ替え前のプール規模で固定する。
+ */
+export const PASS_EXPECTATION_TARGET = 744;
+
+/**
  * 学習記録から合格期待値（0-100）を計算する
  */
 export function calcPassExpectation(

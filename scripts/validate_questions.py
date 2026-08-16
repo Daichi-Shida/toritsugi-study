@@ -19,17 +19,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "src" / "data" / "questions"
+# 現在の出題プール（src/data/questions/index.ts が読み込んでいるファイル）
 FILES = [
+    "kakomon_r7_tokyo.json",
     "kakomon_r6_tokyo.json",
     "kakomon_r5_tokyo.json",
     "kakomon_r4_tokyo.json",
-    "kakomon_r6_hokkaidou.json",
-    "kakomon_r6_ibaraki.json",
-    "kakomon_r6_aiti.json",
-    "kakomon_r6_kansai.json",
-    "kakomon_r6_hukuoka.json",
-    "r8_revision_questions.json",
-    "r8_deep_questions.json",
+    "kakomon_r3_tokyo.json",
+    "kakomon_r7_hokkaidou.json",
+    "kakomon_r7_ibaraki.json",
+    "kakomon_r7_aiti.json",
+    "kakomon_r7_kansai.json",
+    "kakomon_r7_hirosima.json",
+    "kakomon_r7_hukuoka.json",
+    "r8_tebiki_questions.json",
 ]
 
 VALID_CATEGORIES = {
