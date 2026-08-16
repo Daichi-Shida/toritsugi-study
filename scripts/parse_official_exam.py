@@ -137,21 +137,24 @@ def question_blocks(key: str) -> dict[int, list[str]]:
     同じ内容が重複する）ため、問ごとに候補を集めていちばん行数の多いものを採る。
     """
     candidates: dict[int, list[list[str]]] = {}
+    am_numbers: set[int] = set()
     for part in ("am", "pm"):
         pdf = PDF_DIR / f"{key}_{part}.pdf"
         if not pdf.exists():
             continue
+        part_blocks: dict[int, list[list[str]]] = {}
         current: int | None = None
         buf: list[str] = []
         for lines in page_lines(pdf):
             if is_cover(lines):
                 continue
             for ln in lines:
-                m = re.match(r"^問\s*([０-９0-9]{1,3})\s*(.*)$", ln)
+                # 栃木県は【問１】のように括弧付き
+                m = re.match(r"^[【\[]?\s*問\s*([０-９0-9]{1,3})\s*[】\]]?\s*(.*)$", ln)
                 n = int(_z2h_num(m.group(1))) if m else None
                 if n is not None and 1 <= n <= 120:
                     if current is not None:
-                        candidates.setdefault(current, []).append(buf)
+                        part_blocks.setdefault(current, []).append(buf)
                     current, buf = n, []
                     rest = m.group(2).strip()
                     if rest:
@@ -160,26 +163,81 @@ def question_blocks(key: str) -> dict[int, list[str]]:
                 if current is not None:
                     buf.append(ln)
         if current is not None:
-            candidates.setdefault(current, []).append(buf)
+            part_blocks.setdefault(current, []).append(buf)
+
+        # ブロックによって、午後の問番号が1に振り直される（東京・福岡は通し番号）。
+        # 午前と番号がぶつかるときは午後を+60して通し番号に直す。
+        offset = 60 if part == "pm" and (am_numbers & set(part_blocks)) else 0
+        for n, cands in part_blocks.items():
+            candidates.setdefault(n + offset, []).extend(cands)
+        if part == "am":
+            am_numbers = set(part_blocks)
 
     return {n: max(cands, key=len) for n, cands in candidates.items()}
 
 
 def load_answers(key: str) -> dict[int, int]:
-    """正答PDFから 問番号 -> 正答番号 を読む。"""
+    """正答PDFから 問番号 -> 正答番号 を読む。
+
+    正答表の作りは県ごとにばらばらなので、2通りの並びに対応する。
+      (A) 「問１ 3 問３１ 1 …」のように 問番号と正答が交互に並ぶ（宮城・高知）
+      (B) 「問１ 問２ …」「3 1 …」/「設問 1 2 …」「正答 5 4 …」のように
+          見出し行と値行が対になる（関西・愛知・福岡）
+    午前と午後で番号が振り直される正答表では、2度目に出た番号を+60して通し番号に直す。
+    """
     pdf = PDF_DIR / f"{key}_ans.pdf"
-    nums: list[int] = []
-    for lines in page_lines(pdf):
-        for ln in lines:
-            # 「1 2 31 1 61 3 91 2」のように 設問番号/解答番号 が交互に並ぶ
-            toks = re.findall(r"\d+", _z2h_num(ln))
-            if len(toks) >= 2 and "設問" not in ln and "解答" not in ln:
-                nums.extend(int(t) for t in toks)
+    lines = [ln for page in page_lines(pdf) for ln in page]
+
+    seen: dict[int, int] = {}      # 問番号 -> 出現回数
     answers: dict[int, int] = {}
-    for i in range(0, len(nums) - 1, 2):
-        q, a = nums[i], nums[i + 1]
-        if 1 <= q <= 120 and 1 <= a <= 5:
-            answers.setdefault(q, a)
+
+    def put(num: int, val: int) -> None:
+        if not (1 <= num <= 120 and 1 <= val <= 5):
+            return
+        seen[num] = seen.get(num, 0) + 1
+        key_num = num + 60 * (seen[num] - 1)
+        if key_num <= 120:
+            answers.setdefault(key_num, val)
+
+    # (A) 問番号と正答が交互に並ぶ形
+    pair_re = re.compile(r"問\s*([０-９0-9]{1,3})\s+([1-5１-５])(?![０-９0-9])")
+    for ln in lines:
+        for m in pair_re.finditer(ln):
+            put(int(_z2h_num(m.group(1))), int(_z2h_num(m.group(2))))
+    if len(answers) >= 100:
+        return answers
+
+    # (B) 見出し行と値行が対になる形
+    seen.clear()
+    answers.clear()
+    header_nums: list[int] | None = None
+    for ln in lines:
+        z = _z2h_num(ln)
+        qs = re.findall(r"問\s*(\d{1,3})", z)
+        if len(qs) < 3 and z.strip().startswith("設問"):
+            qs = re.findall(r"(?<![\d])(\d{1,3})(?![\d])", z)
+        if len(qs) >= 3:
+            header_nums = [int(x) for x in qs]
+            continue
+        if header_nums:
+            vals = re.findall(r"(?<![\d])([1-5])(?![\d])", z)
+            if len(vals) == len(header_nums):
+                for num, val in zip(header_nums, vals):
+                    put(num, int(val))
+                header_nums = None
+    if len(answers) >= 100:
+        return answers
+
+    # (C) 番号だけが交互に並ぶ形（東京の「1 2 31 1 61 3 91 2」）
+    seen.clear()
+    answers.clear()
+    for ln in lines:
+        if "設問" in ln or "解答" in ln or "正答" in ln:
+            continue
+        toks = re.findall(r"\d+", _z2h_num(ln))
+        if len(toks) >= 2 and len(toks) % 2 == 0:
+            for i in range(0, len(toks), 2):
+                put(int(toks[i]), int(toks[i + 1]))
     return answers
 
 

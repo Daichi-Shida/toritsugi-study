@@ -49,12 +49,26 @@ NUM = "１２３４５"
 LAB = "ａｂｃｄｅ"
 
 # (PDFキー, 出典サイトの生HTMLディレクトリ, 出力ファイル, 年, ID接頭辞, ラベル)
+#
+# 試験はブロック単位で共通問題なので、問題PDFはブロック内のどの県のものでも中身は同じ。
+# IDの接頭辞と解説の取得元（出典サイトの県）は従来のまま据え置き、妻の学習記録が
+# そのまま紐づくようにしている（例: 北海道・東北は宮城県のPDFだが ID は kk_r7h）。
 SOURCES = [
+    # 南関東（東京都）は直近5年分
     ("r7_tokyo", "r7_toukyou", "kakomon_r7_tokyo.json", 2025, "kk_r7t", "東京都（南関東）"),
     ("r6_tokyo", "r6_tokyo", "kakomon_r6_tokyo.json", 2024, "kk_r6t", "東京都（南関東）"),
     ("r5_tokyo", "r5_tokyo", "kakomon_r5_tokyo.json", 2023, "kk_r5t", "東京都（南関東）"),
     ("r4_tokyo", "r4_tokyo", "kakomon_r4_tokyo.json", 2022, "kk_r4t", "東京都（南関東）"),
     ("r3_tokyo", "r3_toukyou", "kakomon_r3_tokyo.json", 2021, "kk_r3t", "東京都（南関東）"),
+    # 令和7年度・残り6ブロック
+    ("r7_hokkaidou", "r7_hokkaidou", "kakomon_r7_hokkaidou.json", 2025, "kk_r7h", "北海道・東北"),
+    ("r7_ibaraki", "r7_ibaraki", "kakomon_r7_ibaraki.json", 2025, "kk_r7ib", "北関東・甲信越"),
+    ("r7_aiti", "r7_aiti", "kakomon_r7_aiti.json", 2025, "kk_r7a", "東海・北陸"),
+    ("r7_kansai", "r7_kansaikouikirengou", "kakomon_r7_kansai.json", 2025, "kk_r7k", "関西広域連合"),
+    ("r7_hirosima", "r7_hirosima", "kakomon_r7_hirosima.json", 2025, "kk_r7c", "中国・四国"),
+    # 九州・沖縄（福岡県）は未対応。PDFの左余白に章名が縦書きで入っていて本文行に
+    # 混ざるため、記述と選択肢を切り出せない。当面は従来方式（出典サイト由来）の
+    # kakomon_r7_hukuoka.json をそのまま使う（gen_kakomon_questions.py が生成）。
 ]
 
 # 手引き令和8年4月改訂で内容が古くなった過去問（gen_kakomon_questions.py と同じ理由）
@@ -72,6 +86,15 @@ def _undouble(s: str) -> str:
     if len(s) >= 4 and len(s) % 2 == 0 and s[0::2] == s[1::2]:
         return s[0::2]
     return s
+
+
+def fallback_chapter_map(raw_dir: str) -> dict[int, str]:
+    """PDFに章見出しが無いブロック用。出典サイトの目次から章の並びを読む。
+
+    章の並びと問数（主な医薬品40問・他20問）はブロックごとに決まっているので、
+    出典ページの目次リンクから順序だけ借りれば通し番号に割り当てられる。
+    """
+    return GK.block_chapter_map(ROOT / "scripts" / "kakomon_raw" / raw_dir)
 
 
 def chapter_map(key: str) -> dict[int, str]:
@@ -92,7 +115,7 @@ def chapter_map(key: str) -> dict[int, str]:
                     if s == heading or s.endswith(heading):
                         pending = cat
                         break
-                m = re.match(r"^問\s*([０-９0-9]{1,3})", ln)
+                m = re.match(r"^[【\[]?\s*問\s*([０-９0-9]{1,3})", ln)
                 if m and pending:
                     n = int(_z2h_num(m.group(1)))
                     if 1 <= n <= 120:
@@ -340,6 +363,11 @@ def build_source(key, raw_dir, out_name, year, prefix, pref_label):
     blocks = question_blocks(key)
     answers = load_answers(key)
     chapters = chapter_map(key)
+    # 見出しを持たないPDF（宮城・栃木・関西など）は出典サイトの目次から章を決める
+    if len(set(chapters.values())) < 5:
+        fallback = fallback_chapter_map(raw_dir)
+        if len(set(fallback.values())) >= 5:
+            chapters = fallback
     questions, skipped, no_answer, excluded = [], [], [], []
     conflicts: list[str] = []
     for n in sorted(blocks):
