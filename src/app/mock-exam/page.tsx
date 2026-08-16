@@ -18,7 +18,7 @@ import { loadProgress, saveProgress, addSession } from "@/lib/storage";
 import { updateRecord } from "@/lib/srs";
 import { ALL_QUESTIONS } from "@/data/questions";
 import QuestionNavigator from "@/components/mock/QuestionNavigator";
-import type { SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion } from "@/types";
+import type { SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion, WordCombinationQuestion } from "@/types";
 
 type Phase = "intro" | "exam" | "confirm-submit";
 
@@ -266,6 +266,13 @@ export default function MockExamPage() {
           </div>
         )}
 
+        {/* 穴埋め型の本文 */}
+        {q.type === "word_combination" && (q as WordCombinationQuestion).passage && (
+          <div className="rounded-2xl p-3.5 mb-3 border border-cream-200 bg-cream-50/70 text-sm text-mocha-700 leading-relaxed">
+            {(q as WordCombinationQuestion).passage}
+          </div>
+        )}
+
         {/* 選択肢 */}
         {(!q.type || q.type === "simple_select") && (() => {
           const sq = q as SimpleSelectQuestion;
@@ -282,7 +289,7 @@ export default function MockExamPage() {
                   }`}
                   style={{ minHeight: "52px" }}
                 >
-                  <span className="font-bold text-primary-500 mr-2">{["A", "B", "C", "D"][i]}.</span>
+                  <span className="font-bold text-primary-500 mr-2">{i + 1}.</span>
                   {option}
                 </button>
               ))}
@@ -317,6 +324,36 @@ export default function MockExamPage() {
                       <span key={j} className="w-10 text-center">{isSeigo ? "正" : "誤"}</span>
                     ))}
                   </div>
+                </button>
+              ))}
+            </div>
+          );
+        })()}
+
+        {q.type === "word_combination" && (() => {
+          const wq = q as WordCombinationQuestion;
+          return (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center pl-8 gap-2">
+                {wq.word_headers.map((h) => (
+                  <span key={h} className="flex-1 text-center text-[10px] font-bold text-primary-500">{h}</span>
+                ))}
+              </div>
+              {wq.word_options.map((words, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleAnswer(i)}
+                  className={`flex items-center gap-2 w-full rounded-2xl px-4 py-3 font-medium transition-all duration-150 text-sm backdrop-blur-md ${
+                    selectedAnswer === i
+                      ? "border-2 border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 text-primary-900 shadow-glow-soft"
+                      : "border-2 border-cream-200 bg-white/65 text-mocha-700 hover:border-primary-300 hover:bg-cream-50/85"
+                  }`}
+                  style={{ minHeight: "52px" }}
+                >
+                  <span className="font-bold text-primary-500 w-6 shrink-0">{i + 1}.</span>
+                  {words.map((w, j) => (
+                    <span key={j} className="flex-1 text-center text-[13px] leading-snug break-words">{w}</span>
+                  ))}
                 </button>
               ))}
             </div>

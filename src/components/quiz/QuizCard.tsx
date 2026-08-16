@@ -6,6 +6,7 @@ import type {
   SimpleSelectQuestion,
   SeigoCombinationQuestion,
   CorrectCombinationQuestion,
+  WordCombinationQuestion,
 } from "@/types";
 
 interface Props {
@@ -45,7 +46,8 @@ function SimpleSelectOptions({ question, selectedIndex, isAnswered, onAnswer }: 
             }
             transition={isWrongPick ? { duration: 0.5 } : { duration: 0.4 }}
           >
-            <span className="font-bold text-primary-500 mr-2.5 tracking-wide">{["A", "B", "C", "D", "E"][i]}.</span>
+            {/* 本試験は選択肢が1〜5の番号なので、番号のまま表示する */}
+            <span className="font-bold text-primary-500 mr-2.5 tracking-wide">{i + 1}.</span>
             <span className="leading-relaxed">{option}</span>
           </motion.button>
         );
@@ -114,6 +116,45 @@ function CorrectCombinationOptions({ question, selectedIndex, isAnswered, onAnsw
   );
 }
 
+function WordCombinationOptions({ question, selectedIndex, isAnswered, onAnswer }: { question: WordCombinationQuestion } & Omit<Props, "question">) {
+  return (
+    <div className="flex flex-col gap-2">
+      {/* 語句の列見出し（ａ ｂ ｃ …） */}
+      <div className="flex items-center pl-8 gap-2">
+        {question.word_headers.map((h) => (
+          <span key={h} className="flex-1 text-center text-[10px] font-bold text-primary-500 tracking-[0.15em]">
+            {h}
+          </span>
+        ))}
+      </div>
+      {question.word_options.map((words, i) => (
+        <motion.button
+          key={i}
+          className={`${optionClass(i, question.correctIndex, selectedIndex, isAnswered)} flex items-center gap-2`}
+          onClick={() => onAnswer(i)}
+          disabled={isAnswered}
+          whileTap={!isAnswered ? { scale: 0.98 } : {}}
+        >
+          <span className="font-bold text-primary-500 w-6 shrink-0 text-sm">{i + 1}.</span>
+          {words.map((w, j) => (
+            <span key={j} className="flex-1 text-center text-[13px] leading-snug break-words">
+              {w}
+            </span>
+          ))}
+        </motion.button>
+      ))}
+    </div>
+  );
+}
+
+function PassageBlock({ passage }: { passage: string }) {
+  return (
+    <div className="rounded-2xl p-3.5 border border-cream-200 bg-cream-50/70 text-sm text-mocha-700 leading-relaxed">
+      {passage}
+    </div>
+  );
+}
+
 function StatementsList({ statements }: { statements: { label: string; text: string }[] }) {
   return (
     <div className="flex flex-col gap-2 rounded-2xl p-3.5 border border-cream-200 bg-cream-50/70">
@@ -149,7 +190,8 @@ export default function QuizCard({ question, selectedIndex, isAnswered, onAnswer
         </span>
         {qType !== "simple_select" && (
           <span className="badge badge-gold">
-            {qType === "seigo_combination" ? "正誤判定" : "組み合わせ"}
+            {qType === "seigo_combination" ? "正誤判定"
+              : qType === "word_combination" ? "穴埋め" : "組み合わせ"}
           </span>
         )}
       </div>
@@ -162,6 +204,9 @@ export default function QuizCard({ question, selectedIndex, isAnswered, onAnswer
       {(qType === "seigo_combination" || qType === "correct_combination") && (
         <StatementsList statements={(question as SeigoCombinationQuestion | CorrectCombinationQuestion).statements} />
       )}
+      {qType === "word_combination" && (question as WordCombinationQuestion).passage && (
+        <PassageBlock passage={(question as WordCombinationQuestion).passage} />
+      )}
 
       {qType === "simple_select" && (
         <SimpleSelectOptions question={question as SimpleSelectQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={onAnswer} />
@@ -171,6 +216,9 @@ export default function QuizCard({ question, selectedIndex, isAnswered, onAnswer
       )}
       {qType === "correct_combination" && (
         <CorrectCombinationOptions question={question as CorrectCombinationQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={onAnswer} />
+      )}
+      {qType === "word_combination" && (
+        <WordCombinationOptions question={question as WordCombinationQuestion} selectedIndex={selectedIndex} isAnswered={isAnswered} onAnswer={onAnswer} />
       )}
     </motion.div>
   );

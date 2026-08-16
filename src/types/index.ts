@@ -66,10 +66,22 @@ export interface CorrectCombinationQuestion extends QuestionBase {
   correctIndex: number;
 }
 
+// ④ 語句の組み合わせ型（穴埋め）
+//    passage の（ ａ ）（ ｂ ）… に入る字句の組み合わせを選ぶ。
+//    word_options の各行は word_headers と同じ並びの字句。
+export interface WordCombinationQuestion extends QuestionBase {
+  type: "word_combination";
+  passage: string;
+  word_headers: string[];
+  word_options: string[][];
+  correctIndex: number;
+}
+
 export type Question =
   | SimpleSelectQuestion
   | SeigoCombinationQuestion
-  | CorrectCombinationQuestion;
+  | CorrectCombinationQuestion
+  | WordCombinationQuestion;
 
 // ===== 学習記録 =====
 export interface QuestionRecord {

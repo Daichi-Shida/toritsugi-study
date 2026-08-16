@@ -17,3 +17,6 @@ docs/tebiki/ch4_struct.md
 
 # 学習記録の保全を検証するための一時データ（make_stats_fixture.pyで再生成）
 scripts/stats_fixture.json
+
+# 公式の試験問題・正答PDF（fetch_official_pdf.py で再取得可能・容量が大きいため除外）
+scripts/official_pdf/

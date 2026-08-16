@@ -144,6 +144,24 @@ for fname in FILES:
                     for o in opts:
                         if o not in stmt_labels:
                             err(qid, fname, f"combo_options[{i}] のラベル{o!r} が statements に存在しない")
+        elif qtype == "word_combination":
+            headers = q.get("word_headers", [])
+            rows = q.get("word_options", [])
+            if not headers or not rows:
+                err(qid, fname, "word_headers または word_options が空")
+            else:
+                if len(rows) != 5:
+                    warn(qid, fname, f"word_options が5択ではない（{len(rows)}）")
+                if not (0 <= ci < len(rows)):
+                    err(qid, fname, f"correctIndex({ci}) が word_options範囲外({len(rows)})")
+                for i, row in enumerate(rows):
+                    if not isinstance(row, list):
+                        err(qid, fname, f"word_options[{i}] が配列ではない")
+                    elif len(row) != len(headers):
+                        err(qid, fname, f"word_options[{i}] の語句数({len(row)}) != 見出し数({len(headers)})")
+                if not q.get("passage"):
+                    warn(qid, fname, "passage（空欄入りの本文）が空")
+
         else:
             err(qid, fname, f"未知の type: {qtype!r}")
 

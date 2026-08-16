@@ -15,7 +15,6 @@ import Confetti from "@/components/effects/Confetti";
 import ExpFloater from "@/components/effects/ExpFloater";
 import LevelUpModal from "@/components/effects/LevelUpModal";
 import { ALL_QUESTIONS } from "@/data/questions";
-import { shuffleQuestion } from "@/lib/shuffle";
 import type { CharacterStage } from "@/types";
 
 const SESSION_SIZE = 10;
@@ -99,7 +98,8 @@ function QuizContent() {
     }
 
     const size = Math.min(SESSION_SIZE, questions.length);
-    setQueue(questions.slice(0, size).map(shuffleQuestion));
+    // 選択肢は本試験の並びのまま出す（正解の番号も原文どおりにするため）
+    setQueue(questions.slice(0, size));
     setAnswers(new Array(size).fill(null));
     setShowResultSheet(false);
     setCurrentIndex(0);
