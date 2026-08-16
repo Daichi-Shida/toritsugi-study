@@ -67,3 +67,13 @@ toritsugi-study/
 - [ ] 間違えた問題が次回以降優先的に出題される
 - [ ] キャラクターのレベル変化が視覚的にわかる
 - [ ] オフライン状態でも基本機能が動く
+
+## 現在地（2026-08-17）
+- 出題プール **1321問**。全問が各実施団体の**公式PDF由来で本試験そのままの形式**
+  （南関東は令和3〜7年度の5年分、他6ブロックは令和7年度、＋手引き令和8年4月改訂の自作30問）
+- 詳しい経緯・PDF解析の落とし穴・検証コマンドは `docs/session_memory.md` を参照
+- 問題を作り直すときは `python3 scripts/gen_official_questions.py` を使う。
+  **`scripts/gen_kakomon_questions.py` は実行しないこと**（同じファイル名を出力して原文形式を壊す）
+- 変更後は `python3 scripts/audit_questions.py`（公式PDFの正答と再照合する監査）を必ず通す
+- 妻が実際に使用中。学習記録は `retired_index.json` と `src/lib/questionIndex.ts` で
+  問題入れ替え後も章別正答率が動かないようにしてある
