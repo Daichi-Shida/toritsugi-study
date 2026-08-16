@@ -31,6 +31,7 @@ OFFICIAL_PDF_KEY = {
     "kakomon_r7_hokkaidou.json": "r7_hokkaidou", "kakomon_r7_ibaraki.json": "r7_ibaraki",
     "kakomon_r7_aiti.json": "r7_aiti", "kakomon_r7_kansai.json": "r7_kansai",
     "kakomon_r7_hirosima.json": "r7_hirosima",
+    "kakomon_r7_hukuoka.json": "r7_hukuoka",
 }
 
 issues: list[tuple[str, str, str]] = []   # (深刻度, ID, 内容)

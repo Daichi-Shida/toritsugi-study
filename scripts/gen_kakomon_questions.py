@@ -21,10 +21,9 @@ RAW_ROOT = ROOT / "scripts" / "kakomon_raw"
 # 他のブロックは scripts/gen_official_questions.py が本試験そのままの形式で生成しており、
 # ここに書き戻すと上書きして原文形式が失われる。
 # (生データDir, 出力ファイル, 年, ID接頭辞, ラベル)
-SOURCES = [
-    # 九州・沖縄。公式PDFは左余白の縦書き章名が本文行に混ざるため未対応
-    ("r7_hukuoka", "kakomon_r7_hukuoka.json", 2025, "kk_r7f", "九州・沖縄"),
-]
+# 全ブロックが公式PDFから生成できるようになったため、ここで作る問題はもう無い。
+# 解説の整形処理（clean_reason など）だけを gen_official_questions.py が使っている。
+SOURCES = []
 
 C1 = "医薬品に共通する特性と基本的な知識"
 C2 = "人体の働きと医薬品"

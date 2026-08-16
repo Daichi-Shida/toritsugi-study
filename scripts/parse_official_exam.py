@@ -55,8 +55,15 @@ def decode_cid(s: str) -> str:
     return _CID_RE.sub(rep, s)
 
 
-def page_lines(pdf: Path) -> list[list[str]]:
+# 左余白に章名が縦書きで入るPDF（福岡県）。本文行に1文字ずつ混ざるため、
+# 本文の左端より外側にある文字を落としてから行を組む。
+VERTICAL_MARGIN_KEYS = ("hukuoka",)
+
+
+def page_lines(pdf: Path, drop_left_margin: bool | None = None) -> list[list[str]]:
     """ページごとの行リストを返す（ルビ除去済み）。"""
+    if drop_left_margin is None:
+        drop_left_margin = any(k in pdf.name for k in VERTICAL_MARGIN_KEYS)
     from pdfminer.high_level import extract_pages
     from pdfminer.layout import LTTextContainer, LTChar, LAParams
 
@@ -82,8 +89,43 @@ def page_lines(pdf: Path) -> list[list[str]]:
                     columns.setdefault(col, []).append(
                         (ch.y1, ch.x0 - col * width, ch.x1 - col * width, ch.size, txt))
         for col in sorted(columns):
-            pages.append(_lines_from_chars(columns[col]))
+            chars = columns[col]
+            if drop_left_margin:
+                chars = _drop_left_margin(chars)
+            pages.append(_lines_from_chars(chars))
     return pages
+
+
+def _drop_left_margin(chars: list) -> list:
+    """本文の左端より外側にある文字（縦書きの章名など）を落とす。
+
+    行の先頭文字のx座標を集めると、本文の左端に強い山ができる。その山より
+    はっきり左にある文字は余白の飾りとみなす。本文の左端そのものは残る。
+    """
+    if not chars:
+        return chars
+    from collections import Counter
+    # いったん行に分けて、各行の先頭x座標を集める
+    tmp = sorted(chars, key=lambda c: (-c[0], c[1]))
+    firsts, cur_y, first_x = [], None, None
+    for y, x0, _x1, _size, _txt in tmp:
+        if cur_y is None or abs(cur_y - y) > LINE_Y_TOLERANCE:
+            if first_x is not None:
+                firsts.append(first_x)
+            cur_y, first_x = y, x0
+        else:
+            first_x = min(first_x, x0)
+    if first_x is not None:
+        firsts.append(first_x)
+    if len(firsts) < 8:
+        return chars
+    # 5pt刻みに丸めて最頻値をとる＝本文の左端
+    body_left = Counter(round(x / 5) * 5 for x in firsts).most_common(1)[0][0]
+    size = sum(c[3] for c in chars) / len(chars)
+    cutoff = body_left - size * 1.2
+    kept = [c for c in chars if c[1] >= cutoff]
+    # 落としすぎたときは元に戻す（想定と違う版面のPDFを壊さないため）
+    return kept if len(kept) > len(chars) * 0.7 else chars
 
 
 def _lines_from_chars(chars: list) -> list[str]:

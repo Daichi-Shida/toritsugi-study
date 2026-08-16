@@ -46,7 +46,9 @@ HEADING_TO_CATEGORY = [
 ]
 
 NUM = "１２３４５"
-LAB = "ａｂｃｄｅ"
+# 記述のラベルは県により「ａ〜ｅ」と「ア〜オ」の2系統がある（福岡はア〜オ）
+LAB_FAMILIES = ("ａｂｃｄｅ", "アイウエオ")
+LAB = "".join(LAB_FAMILIES)
 
 # (PDFキー, 出典サイトの生HTMLディレクトリ, 出力ファイル, 年, ID接頭辞, ラベル)
 #
@@ -66,9 +68,7 @@ SOURCES = [
     ("r7_aiti", "r7_aiti", "kakomon_r7_aiti.json", 2025, "kk_r7a", "東海・北陸"),
     ("r7_kansai", "r7_kansaikouikirengou", "kakomon_r7_kansai.json", 2025, "kk_r7k", "関西広域連合"),
     ("r7_hirosima", "r7_hirosima", "kakomon_r7_hirosima.json", 2025, "kk_r7c", "中国・四国"),
-    # 九州・沖縄（福岡県）は未対応。PDFの左余白に章名が縦書きで入っていて本文行に
-    # 混ざるため、記述と選択肢を切り出せない。当面は従来方式（出典サイト由来）の
-    # kakomon_r7_hukuoka.json をそのまま使う（gen_kakomon_questions.py が生成）。
+    ("r7_hukuoka", "r7_hukuoka", "kakomon_r7_hukuoka.json", 2025, "kk_r7f", "九州・沖縄"),
 ]
 
 # 手引き令和8年4月改訂で内容が古くなった過去問（gen_kakomon_questions.py と同じ理由）
@@ -239,11 +239,16 @@ def parse_question(lines: list[str]):
 def _split_statements(lines: list[str]):
     """記述（ａ〜ｅ）と、その前の設問文に分ける。"""
     starts = [i for i, ln in enumerate(lines) if RE_STMT_START.match(ln)]
-    # ラベルが ａ から順に並んでいるものだけ採用する
-    picks, expected = [], 0
+    # ラベルが先頭（ａ または ア）から順に並んでいるものだけ採用する
+    picks, expected, family = [], 0, None
     for i in starts:
         lab = RE_STMT_START.match(lines[i]).group(1)
-        if LAB.index(lab) == expected:
+        fam = next((f for f in LAB_FAMILIES if lab in f), None)
+        if fam is None:
+            continue
+        if family is None and fam.index(lab) == 0:
+            family = fam
+        if family is fam and fam.index(lab) == expected:
             picks.append(i)
             expected += 1
     if not picks:
