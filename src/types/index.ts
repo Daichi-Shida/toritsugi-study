@@ -130,8 +130,9 @@ export interface MockExamSession {
   questions: Question[];
   answers: (number | null)[];  // インデックスと対応、未回答はnull
   startedAt: string;
-  timeLimitSeconds: number;    // デフォルト7200（120分）
   isFinished: boolean;
+  /** 旧データ互換。制限時間は廃止したので新しいセッションには入らない */
+  timeLimitSeconds?: number;
 }
 
 export interface MockExamResult {

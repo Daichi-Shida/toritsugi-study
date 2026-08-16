@@ -14,8 +14,8 @@ import { shuffleQuestion } from "./shuffle";
 
 const PASS_RATE_TOTAL = 0.7;         // 総合合格ライン 70%
 const PASS_RATE_CATEGORY = 0.35;     // カテゴリ別合格ライン 35%
-const DEFAULT_TIME_LIMIT = 7200;     // 120分（秒）
-const QUICK_TIME_LIMIT = 1800;       // 30分（秒）
+// 制限時間は設けない（自分のペースで解けるようにするため）。
+// 経過時間は計測を続け、結果画面の所要時間と学習時間の集計に使う。
 
 // クイック模擬試験の章別出題数（通常の1/4）
 const QUICK_CATEGORY_QUESTION_COUNT: Record<QuestionCategory, number> = {
@@ -60,15 +60,11 @@ export function buildQuickMockExamQuestions(allQuestions: Question[]): Question[
 /**
  * 模擬試験セッションを開始する
  */
-export function startMockExam(
-  questions: Question[],
-  isQuick = false
-): MockExamSession {
+export function startMockExam(questions: Question[]): MockExamSession {
   const session: MockExamSession = {
     questions,
     answers: new Array(questions.length).fill(null),
     startedAt: new Date().toISOString(),
-    timeLimitSeconds: isQuick ? QUICK_TIME_LIMIT : DEFAULT_TIME_LIMIT,
     isFinished: false,
   };
   saveMockExamSession(session);
@@ -145,17 +141,17 @@ export function scoreMockExam(session: MockExamSession): MockExamResult {
 }
 
 /**
- * 残り時間（秒）を計算する
+ * 開始からの経過時間（秒）を計算する
  */
-export function calcRemainingSeconds(session: MockExamSession): number {
-  const elapsed = Math.floor(
-    (Date.now() - new Date(session.startedAt).getTime()) / 1000
+export function calcElapsedSeconds(session: MockExamSession): number {
+  return Math.max(
+    0,
+    Math.floor((Date.now() - new Date(session.startedAt).getTime()) / 1000)
   );
-  return Math.max(0, session.timeLimitSeconds - elapsed);
 }
 
 /**
- * 残り時間を MM:SS 形式にフォーマット
+ * 時間を MM:SS（1時間以上は H:MM:SS）形式にフォーマット
  */
 export function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);

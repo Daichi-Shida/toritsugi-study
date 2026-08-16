@@ -9,7 +9,7 @@ import {
   buildQuickMockExamQuestions,
   startMockExam,
   recordAnswer,
-  calcRemainingSeconds,
+  calcElapsedSeconds,
   formatTime,
   loadMockExamSession,
   saveMockExamSession,
@@ -27,21 +27,24 @@ export default function MockExamPage() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [session, setSession] = useState<MockExamSession | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [remainingSeconds, setRemainingSeconds] = useState(7200);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showNavigator, setShowNavigator] = useState(false);
+  const [resumable, setResumable] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 中断セッションがある場合はintroで「再開する」ボタンを表示するのみ（自動切り替えしない）
+  // localStorage はサーバ側に無いので、描画中ではなくマウント後に判定する
+  // （描画中に読むとサーバとクライアントで結果が食い違い、ハイドレーションが壊れる）
+  useEffect(() => {
+    if (phase === "intro") setResumable(loadMockExamSession() !== null);
+  }, [phase]);
 
-  // タイマー
+  // 経過時間の計測（制限時間はないので、時間切れによる自動提出はしない）
   useEffect(() => {
     if (phase !== "exam" || !session) return;
+    setElapsedSeconds(calcElapsedSeconds(session));
     timerRef.current = setInterval(() => {
-      const remaining = calcRemainingSeconds(session);
-      setRemainingSeconds(remaining);
-      if (remaining <= 0) {
-        handleSubmit(session);
-      }
+      setElapsedSeconds(calcElapsedSeconds(session));
     }, 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,9 +54,9 @@ export default function MockExamPage() {
     const questions = quick
       ? buildQuickMockExamQuestions(ALL_QUESTIONS)
       : buildMockExamQuestions(ALL_QUESTIONS);
-    const newSession = startMockExam(questions, quick);
+    const newSession = startMockExam(questions);
     setSession(newSession);
-    setRemainingSeconds(newSession.timeLimitSeconds);
+    setElapsedSeconds(0);
     setCurrentIndex(0);
     setPhase("exam");
   }, []);
@@ -104,7 +107,6 @@ export default function MockExamPage() {
 
   // ===== 開始前画面 =====
   if (phase === "intro") {
-    const resumable = typeof window !== "undefined" && loadMockExamSession() !== null;
     return (
       <div className="flex flex-col gap-5 p-5 pb-10">
         <header className="pt-5">
@@ -125,7 +127,7 @@ export default function MockExamPage() {
           </div>
           <ul className="text-xs text-mocha-600 space-y-1.5 mb-3 leading-relaxed">
             <li className="flex gap-2"><span className="text-mocha-400">·</span>30問（各章1/4）</li>
-            <li className="flex gap-2"><span className="text-mocha-400">·</span>制限時間：30分</li>
+            <li className="flex gap-2"><span className="text-mocha-400">·</span>時間制限なし（経過時間だけ表示）</li>
             <li className="flex gap-2"><span className="text-mocha-400">·</span>合格基準：総合70%・各章35%</li>
           </ul>
           <div className="text-[11px] text-mocha-600 mb-3 rounded-2xl bg-cream-50/80 border border-cream-200 p-3 space-y-1">
@@ -153,7 +155,7 @@ export default function MockExamPage() {
           </div>
           <ul className="text-xs text-mocha-600 space-y-1.5 leading-relaxed">
             <li className="flex gap-2"><span className="text-mocha-400">·</span>問題数：120問（5章構成）</li>
-            <li className="flex gap-2"><span className="text-mocha-400">·</span>制限時間：120分</li>
+            <li className="flex gap-2"><span className="text-mocha-400">·</span>時間制限なし（経過時間だけ表示）</li>
             <li className="flex gap-2"><span className="text-mocha-400">·</span>合格基準：総合70%以上 かつ 各章35%以上</li>
             <li className="flex gap-2"><span className="text-mocha-400">·</span>試験中は正解・不正解は表示されません</li>
             <li className="flex gap-2"><span className="text-mocha-400">·</span>途中でアプリを閉じても再開できます</li>
@@ -172,7 +174,7 @@ export default function MockExamPage() {
             <button
               onClick={() => {
                 const saved = loadMockExamSession();
-                if (saved) { setSession(saved); setRemainingSeconds(calcRemainingSeconds(saved)); setPhase("exam"); }
+                if (saved) { setSession(saved); setElapsedSeconds(calcElapsedSeconds(saved)); setPhase("exam"); }
               }}
               className="btn-secondary w-full"
             >
@@ -214,12 +216,11 @@ export default function MockExamPage() {
   const q = session.questions[currentIndex];
   const selectedAnswer = session.answers[currentIndex];
   const answeredCount = session.answers.filter((a) => a !== null).length;
-  const isTimeWarning = remainingSeconds < 600; // 残り10分
 
   return (
     <div className="flex flex-col h-screen">
       {/* ヘッダー */}
-      <div className={`flex items-center justify-between px-5 py-3 backdrop-blur-xl border-b ${isTimeWarning ? "bg-rose-50/85 border-rose-200" : "bg-white/65 border-cream-200"}`}>
+      <div className="flex items-center justify-between px-5 py-3 backdrop-blur-xl border-b bg-white/65 border-cream-200">
         <button
           onClick={() => {
             if (confirm("試験を中断してメニューに戻りますか？\n（進捗は保存されています）")) {
@@ -231,9 +232,12 @@ export default function MockExamPage() {
         >
           ✕ 中断
         </button>
-        <p className={`text-lg font-bold font-mono tabular-nums tracking-wider ${isTimeWarning ? "text-rose-700" : "text-mocha-800"}`}>
-          {isTimeWarning && "⏰ "}{formatTime(remainingSeconds)}
-        </p>
+        <div className="text-center">
+          <p className="text-[10px] text-mocha-400 tracking-wider uppercase">Time</p>
+          <p className="text-base font-bold font-mono tabular-nums tracking-wider text-mocha-800">
+            {formatTime(elapsedSeconds)}
+          </p>
+        </div>
         <div className="text-right">
           <p className="text-[10px] text-mocha-400 tracking-wider uppercase">Answered</p>
           <p className="text-xs font-bold text-mocha-700 tabular-nums">{answeredCount} / {session.questions.length}</p>
