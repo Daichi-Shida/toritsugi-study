@@ -5,8 +5,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import type { Question, UserProgress, QuestionCategory, StudySession } from "@/types";
 import { CATEGORY_CHAPTER } from "@/types";
-import { loadProgress, saveProgress, addSession, toggleBookmark } from "@/lib/storage";
-import { updateRecord, getDueQuestionIds } from "@/lib/srs";
+import { loadProgress, saveProgress, addSession, toggleBookmark, loadRecentQuestionIds, pushRecentQuestionIds } from "@/lib/storage";
+import { updateRecord } from "@/lib/srs";
+import { buildStudyQueue } from "@/lib/questionPicker";
+import type { Focus } from "@/lib/questionPicker";
 import { calcExperience, calcPassExpectation, updateCharacter, PASS_EXPECTATION_TARGET } from "@/lib/score";
 import QuizCard from "@/components/quiz/QuizCard";
 import ResultSheet from "@/components/quiz/ResultSheet";
@@ -56,39 +58,25 @@ function QuizContent() {
     setProgress(p);
     sessionStartRef.current = Date.now();
 
-    let questions: Question[];
+    // 出題プールを決める。並べ替え・抽選は questionPicker に任せる。
+    // （以前はプールの並び順のまま先頭10問を取っていたので、章を開くたび
+    //   同じ問題が同じ順で出ていた）
+    const pool = isBookmarkMode
+      ? ALL_QUESTIONS.filter((q) => new Set(p.bookmarkedIds).has(q.id))
+      : chapterParam
+      ? ALL_QUESTIONS.filter((q) => q.category === chapterParam)
+      : ALL_QUESTIONS;
 
-    if (isBookmarkMode) {
-      const bookmarkSet = new Set(p.bookmarkedIds);
-      questions = ALL_QUESTIONS.filter((q) => bookmarkSet.has(q.id));
-    } else {
-      const pool = chapterParam
-        ? ALL_QUESTIONS.filter((q) => q.category === chapterParam)
-        : ALL_QUESTIONS;
+    // 章別・弱点・見直しは苦手優先、通常学習は未学習優先
+    const focus: Focus = isWeakMode || isBookmarkMode || chapterParam ? "weak" : "fresh";
 
-      if (isWeakMode || chapterParam) {
-        const dueIds = getDueQuestionIds(p.questionRecords);
-        const dueSet = new Set(dueIds);
-
-        const due = pool.filter((q) => dueSet.has(q.id));
-        const weak = pool.filter((q) => {
-          if (dueSet.has(q.id)) return false;
-          const r = p.questionRecords[q.id];
-          return r ? r.correctAttempts / r.totalAttempts < 0.6 : true;
-        });
-        const rest = pool.filter((q) => {
-          if (dueSet.has(q.id)) return false;
-          const r = p.questionRecords[q.id];
-          return r ? r.correctAttempts / r.totalAttempts >= 0.6 : false;
-        });
-        questions = [...due, ...weak, ...rest];
-      } else {
-        const answered = new Set(Object.keys(p.questionRecords));
-        const unanswered = pool.filter((q) => !answered.has(q.id));
-        const answeredList = pool.filter((q) => answered.has(q.id));
-        questions = [...unanswered, ...answeredList];
-      }
-    }
+    const questions = buildStudyQueue({
+      pool,
+      records: p.questionRecords,
+      size: SESSION_SIZE,
+      recentIds: loadRecentQuestionIds(),
+      focus,
+    });
 
     if (questions.length === 0) {
       setQueue([]);
@@ -97,10 +85,12 @@ function QuizContent() {
       return;
     }
 
-    const size = Math.min(SESSION_SIZE, questions.length);
+    // 直近に出した問題として控えておき、次のセッションでは後回しにする
+    pushRecentQuestionIds(questions.map((q) => q.id));
+
     // 選択肢は本試験の並びのまま出す（正解の番号も原文どおりにするため）
-    setQueue(questions.slice(0, size));
-    setAnswers(new Array(size).fill(null));
+    setQueue(questions);
+    setAnswers(new Array(questions.length).fill(null));
     setShowResultSheet(false);
     setCurrentIndex(0);
     setSessionCorrect(0);

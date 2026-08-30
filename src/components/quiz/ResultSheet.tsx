@@ -8,6 +8,7 @@ import AdultMaryCharacter from "@/components/character/AdultMaryCharacter";
 import SamuraiCharacter from "@/components/character/SamuraiCharacter";
 import GoldenBeanSamuraiCharacter from "@/components/character/GoldenBeanSamuraiCharacter";
 import CatCharacter from "@/components/character/CatCharacter";
+import CocoCharacter from "@/components/character/CocoCharacter";
 
 interface Props {
   show: boolean;
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const STAGE_EMOJI: Record<number, string> = {
-  1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️", 8: "🫛", 9: "🐱",
+  1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️", 8: "🫛", 9: "🐱", 10: "🐩",
 };
 
 // ───── 動きパターン（共通・各5種類） ─────
@@ -102,11 +103,60 @@ const LINES: Record<CharacterStage, { correct: string[]; wrong: string[] }> = {
     correct: ["にゃー！", "にゃ♪", "にゃにゃっ✨", "にゃんと正解", "ごろにゃ〜", "みゃ〜お", "にゃはは！", "にゃ、お見事", "ふみゃ♪", "にゃんだふる"],
     wrong:   ["にゃ…ん？", "しょんにょり", "にゃーん…", "みゃう…", "ぷいっ。", "にゃんも…", "ねむにゃい…", "ごめんにゃ"],
   },
+  10: {
+    // ココちゃん：グレーのもふもふトイプードル。高い鳴き声で「キャン！（ひとこと）」。
+    // ①して欲しいこと ②試験前の応援 ③歴代キャラの懐かしいセリフ を混ぜている
+    correct: [
+      "キャン！（ボール投げて）",
+      "キャン！（おさんぽ行こ）",
+      "キャン！（なでて〜）",
+      "キャン！（おやつちょうだい）",
+      "キャン！（フリスビー投げて）",
+      "キャン！（いっしょに走ろ）",
+      "キャン！（もふもふしていいよ）",
+      "キャンっ（しっぽブンブン）",
+      "キャンキャン！（その調子！）",
+      "キャン！（合格までもう少し）",
+      "キャン！（本番でもいける）",
+      "キャン！（今日もえらい）",
+      "キャン！（試験当日は深呼吸）",
+      "キャン！（この1問が効く）",
+      "キャン！（豆侍参上！）",
+      "キャン！（にゃんと正解）",
+      "キャン！（うまたにえん）",
+      "キャン！（HOPE）",
+      "キャン！（ぷりぷり！）",
+      "キャン！（光合成〜！）",
+      "キャン！（ねっとり〜）",
+      "キャン！（見事なり！）",
+      "キャン！（やった〜！）",
+      "キャン！（黄金の正解！）",
+    ],
+    wrong: [
+      "クゥ〜ン（もう1回いこ）",
+      "キャン…（おやつで元気だす）",
+      "クゥ〜ン（ボール見失った）",
+      "キャン…（なでて…）",
+      "クゥ〜ン（ちょっと休憩しよ）",
+      "キャン…（お水ちょうだい）",
+      "キャン…（まだ間に合うよ）",
+      "クゥ〜ン（次は当てる）",
+      "キャン…（本番じゃなくてよかった）",
+      "クゥ〜ン（ドンマイ）",
+      "キャン…（おさんぽで気分転換）",
+      "クゥ〜ン（豆ながら無念…）",
+      "キャン…（しょんにょり）",
+      "クゥ〜ン（DESPAIR）",
+      "キャン…（ふんが〜…）",
+      "クゥ〜ン（ぬるん…）",
+      "キャン…（未熟者…）",
+    ],
+  },
 };
 
 const HEADER: Record<"correct" | "wrong", Record<CharacterStage, string>> = {
-  correct: { 1: "✦ 正解！", 2: "✦ 正解！", 3: "✦ 正解！", 4: "✦ 正解！", 5: "✦ 正解！", 6: "✦ CORRECT", 7: "✦ 見事なり！", 8: "✦ 黄金の正解！", 9: "✦ にゃ正解！" },
-  wrong:   { 1: "もう一歩…", 2: "もう一歩…", 3: "もう一歩…", 4: "もう一歩…", 5: "もう一歩…", 6: "INCORRECT", 7: "未熟者…", 8: "豆ながら無念…", 9: "おしいにゃ…" },
+  correct: { 1: "✦ 正解！", 2: "✦ 正解！", 3: "✦ 正解！", 4: "✦ 正解！", 5: "✦ 正解！", 6: "✦ CORRECT", 7: "✦ 見事なり！", 8: "✦ 黄金の正解！", 9: "✦ にゃ正解！", 10: "✦ キャン正解！" },
+  wrong:   { 1: "もう一歩…", 2: "もう一歩…", 3: "もう一歩…", 4: "もう一歩…", 5: "もう一歩…", 6: "INCORRECT", 7: "未熟者…", 8: "豆ながら無念…", 9: "おしいにゃ…", 10: "きゅ〜ん…" },
 };
 
 // ハッシュ関数（question.id + selectedIndex から決定的にランダム選択）
@@ -131,7 +181,8 @@ function CharacterAvatar({ stage, move }: { stage: CharacterStage; move: MoveSpe
       transition={{ duration: move.duration, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.6 }}
       style={{ transformOrigin: "50% 80%" }}
     >
-      {stage === 9 ? <CatCharacter size={64} /> :
+      {stage === 10 ? <CocoCharacter size={64} /> :
+       stage === 9 ? <CatCharacter size={64} /> :
        stage === 8 ? <GoldenBeanSamuraiCharacter size={64} /> :
        stage === 7 ? <SamuraiCharacter size={64} /> :
        stage === 6 ? <AdultMaryCharacter size={64} /> :

@@ -12,10 +12,13 @@ import {
   calcElapsedSeconds,
   formatTime,
   loadMockExamSession,
-  saveMockExamSession,
+  finishMockExam,
+  hasMockExamResult,
 } from "@/lib/mockExam";
+import type { MockExamGrowth } from "@/lib/mockExam";
 import { loadProgress, saveProgress, addSession } from "@/lib/storage";
 import { updateRecord } from "@/lib/srs";
+import { calcExperience, calcPassExpectation, updateCharacter, PASS_EXPECTATION_TARGET } from "@/lib/score";
 import { ALL_QUESTIONS } from "@/data/questions";
 import QuestionNavigator from "@/components/mock/QuestionNavigator";
 import type { SimpleSelectQuestion, SeigoCombinationQuestion, CorrectCombinationQuestion, WordCombinationQuestion } from "@/types";
@@ -30,13 +33,16 @@ export default function MockExamPage() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showNavigator, setShowNavigator] = useState(false);
   const [resumable, setResumable] = useState(false);
+  const [hasLastResult, setHasLastResult] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 中断セッションがある場合はintroで「再開する」ボタンを表示するのみ（自動切り替えしない）
   // localStorage はサーバ側に無いので、描画中ではなくマウント後に判定する
   // （描画中に読むとサーバとクライアントで結果が食い違い、ハイドレーションが壊れる）
   useEffect(() => {
-    if (phase === "intro") setResumable(loadMockExamSession() !== null);
+    if (phase !== "intro") return;
+    setResumable(loadMockExamSession() !== null);
+    setHasLastResult(hasMockExamResult());
   }, [phase]);
 
   // 経過時間の計測（制限時間はないので、時間切れによる自動提出はしない）
@@ -72,10 +78,11 @@ export default function MockExamPage() {
     if (!target) return;
     if (timerRef.current) clearInterval(timerRef.current);
 
-    // SRS記録に反映
+    // SRS記録・獲得経験値に反映
     const progress = loadProgress();
     const newRecords = { ...progress.questionRecords };
     let correctCount = 0;
+    let gainedExp = 0;
     const categoriesSet = new Set<QuestionCategory>();
     target.questions.forEach((q, i) => {
       const isCorrect = target.answers[i] === q.correctIndex;
@@ -83,7 +90,21 @@ export default function MockExamPage() {
       categoriesSet.add(q.category);
       const existing = newRecords[q.id] ?? null;
       newRecords[q.id] = updateRecord(existing, q.id, isCorrect);
+      // 経験値は章別学習と同じ計算（正解 10×難易度 / 不正解・未回答 2×難易度）
+      gainedExp += calcExperience(isCorrect, q.difficulty);
     });
+
+    // キャラクターの成長と合格期待値を更新する（提出時のこの1回だけ）
+    const passExpectation = calcPassExpectation(newRecords, PASS_EXPECTATION_TARGET);
+    const newCharacter = updateCharacter(progress.character, gainedExp, passExpectation);
+    const growth: MockExamGrowth = {
+      gainedExp,
+      totalExp: newCharacter.experience,
+      nextLevelExp: newCharacter.nextLevelExp,
+      fromStage: progress.character.stage,
+      toStage: newCharacter.stage,
+      toName: newCharacter.name,
+    };
 
     const elapsedSec = Math.max(
       1,
@@ -96,11 +117,12 @@ export default function MockExamPage() {
       durationSeconds: elapsedSec,
       categoriesStudied: Array.from(categoriesSet),
     };
-    saveProgress(addSession({ ...progress, questionRecords: newRecords }, studySession));
+    saveProgress(
+      addSession({ ...progress, questionRecords: newRecords, character: newCharacter }, studySession)
+    );
 
-    // セッションを終了済みにして保存
-    const finished = { ...target, isFinished: true };
-    saveMockExamSession(finished);
+    // 採点して結果を保存する（学習記録・経験値の反映はこの直前の1回だけ）
+    finishMockExam(target, growth);
 
     router.push("/mock-exam/result");
   }, [session, router]);
@@ -170,6 +192,14 @@ export default function MockExamPage() {
           <button onClick={() => handleStart(false)} className="btn-primary w-full text-base py-4">
             本番試験を始める
           </button>
+          {hasLastResult && (
+            <button
+              onClick={() => router.push("/mock-exam/result")}
+              className="btn-secondary w-full"
+            >
+              前回の結果・解説を見る
+            </button>
+          )}
           {resumable && (
             <button
               onClick={() => {

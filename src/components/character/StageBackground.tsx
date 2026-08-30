@@ -33,6 +33,8 @@ const STAGE_BG: Record<CharacterStage, string> = {
 
   // Lv9 ねこさん：ふんわりピンク×クリームの最上位
   9: "radial-gradient(at 12% 8%, rgba(255, 224, 235, 0.9) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(253, 164, 175, 0.55) 0px, transparent 50%), radial-gradient(at 8% 100%, rgba(255, 240, 210, 0.6) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(251, 207, 232, 0.6) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 250, 240, 0.45) 0px, transparent 60%), linear-gradient(135deg, #fff8fa 0%, #ffe9f0 45%, #fbd6c8 100%)",
+  // Lv10 ココちゃん：シルバー×ローズの最上位
+  10: "radial-gradient(at 10% 6%, rgba(226, 232, 240, 0.95) 0px, transparent 45%), radial-gradient(at 90% 4%, rgba(203, 213, 225, 0.6) 0px, transparent 50%), radial-gradient(at 6% 96%, rgba(255, 228, 235, 0.7) 0px, transparent 50%), radial-gradient(at 92% 92%, rgba(226, 232, 240, 0.75) 0px, transparent 55%), radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.5) 0px, transparent 60%), linear-gradient(135deg, #fbfcfe 0%, #eef1f7 45%, #ffe7ee 100%)",
 };
 
 export default function StageBackground() {

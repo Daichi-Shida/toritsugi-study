@@ -8,6 +8,7 @@ import AdultMaryCharacter from "@/components/character/AdultMaryCharacter";
 import SamuraiCharacter from "@/components/character/SamuraiCharacter";
 import GoldenBeanSamuraiCharacter from "@/components/character/GoldenBeanSamuraiCharacter";
 import CatCharacter from "@/components/character/CatCharacter";
+import CocoCharacter from "@/components/character/CocoCharacter";
 
 interface Props {
   show: boolean;
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const STAGE_EMOJI: Record<number, string> = {
-  1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️", 8: "🫛", 9: "🐱",
+  1: "🫘", 2: "🌱", 3: "🌸", 4: "🥔", 5: "👧", 6: "🕵️‍♀️", 7: "🗡️", 8: "🫛", 9: "🐱", 10: "🐩",
 };
 
 function StageVisual({ stage, size = 112 }: { stage: CharacterStage; size?: number }) {
@@ -28,6 +29,7 @@ function StageVisual({ stage, size = 112 }: { stage: CharacterStage; size?: numb
   if (stage === 7) return <SamuraiCharacter size={size} />;
   if (stage === 8) return <GoldenBeanSamuraiCharacter size={size} />;
   if (stage === 9) return <CatCharacter size={size} />;
+  if (stage === 10) return <CocoCharacter size={size} />;
   return <span style={{ fontSize: size * 0.85 }}>{STAGE_EMOJI[stage]}</span>;
 }
 

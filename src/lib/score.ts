@@ -19,9 +19,12 @@ export const STAGE_NAMES: Record<CharacterStage, string> = {
   7: "メアリー侍",
   8: "豆侍",
   9: "ねこさん",
+  10: "ココちゃん",
 };
 
-const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3000, 5000, 8000, 12000]; // 各ステージに必要な経験値
+// 各ステージに必要な経験値。末尾に足す分には既存の記録に影響しない
+// （その経験値に届いていない人のステージは今までどおり）
+const STAGE_THRESHOLDS = [0, 200, 500, 1000, 2000, 3000, 5000, 8000, 12000, 17000];
 
 /**
  * 合格期待値のカバレッジを測る分母（問題数）
@@ -89,7 +92,14 @@ export function getStageFromExp(exp: number): CharacterStage {
       break;
     }
   }
-  return Math.min(stage, 9) as CharacterStage;
+  return Math.min(stage, 10) as CharacterStage;
+}
+
+/**
+ * 次のステージに必要な経験値を返す（最上位ステージでは 0）
+ */
+export function getNextLevelExp(stage: CharacterStage): number {
+  return STAGE_THRESHOLDS[stage] ?? 0;
 }
 
 /**
@@ -103,6 +113,7 @@ export function updateCharacter(
   const newExp = current.experience + gainedExp;
   const newStage = getStageFromExp(newExp);
   const nextThreshold = STAGE_THRESHOLDS[newStage] ?? newExp;
+
 
   return {
     stage: newStage,

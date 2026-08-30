@@ -6,10 +6,12 @@
 import type {
   Question,
   QuestionCategory,
+  CharacterStage,
   MockExamSession,
   MockExamResult,
 } from "@/types";
 import { CATEGORY_QUESTION_COUNT } from "@/types";
+import { pickDiverse } from "./questionPicker";
 
 const PASS_RATE_TOTAL = 0.7;         // 総合合格ライン 70%
 const PASS_RATE_CATEGORY = 0.35;     // カテゴリ別合格ライン 35%
@@ -26,6 +28,10 @@ const QUICK_CATEGORY_QUESTION_COUNT: Record<QuestionCategory, number> = {
 };
 
 const MOCK_EXAM_KEY = "toritsugi_mock_exam";
+// 採点済みの試験。結果画面を開き直しても問題と解説を見返せるように残しておく。
+// （以前は結果画面を開いた瞬間に受験データを消していたので、戻る・再読み込みで
+//   問題を確認できなくなっていた）
+const MOCK_RESULT_KEY = "toritsugi_mock_exam_result";
 
 /**
  * 問題プールからカテゴリ配分に従って模擬試験用問題を選択する
@@ -36,11 +42,11 @@ function buildQuestions(
 ): Question[] {
   const result: Question[] = [];
   for (const [category, count] of Object.entries(countMap)) {
-    const pool = allQuestions
-      .filter((q) => q.category === (category as QuestionCategory))
-      .sort(() => Math.random() - 0.5);
-    const selected: Question[] = [];
-    for (let i = 0; i < count; i++) {
+    const pool = allQuestions.filter((q) => q.category === (category as QuestionCategory));
+    // ランダムに引きつつ、年度違いで同じ論点を聞く問題が重ならないようにする
+    const selected = pickDiverse(pool, count, result);
+    // プールが出題数に満たない時だけ、足りない分を埋める（通常は起きない）
+    for (let i = 0; selected.length < count && pool.length > 0; i++) {
       selected.push(pool[i % pool.length]);
     }
     result.push(...selected);
@@ -163,6 +169,78 @@ export function formatTime(seconds: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+// ===== 採点済みの試験（結果画面用） =====
+
+/** 模擬試験で伸びたキャラクターの成長ぶん（表示用。加算そのものは提出時に1回だけ行う） */
+export interface MockExamGrowth {
+  gainedExp: number;
+  totalExp: number;
+  nextLevelExp: number;
+  fromStage: CharacterStage;
+  toStage: CharacterStage;
+  toName: string;
+  /** レベルアップ演出を出したか（結果画面を開き直すたびに出さないための印） */
+  celebrated?: boolean;
+}
+
+export interface StoredMockExamResult {
+  session: MockExamSession;
+  result: MockExamResult;
+  growth?: MockExamGrowth;
+}
+
+/**
+ * 試験を締めて採点し、結果を保存する。
+ * 学習記録（SRS・学習セッション）の反映は呼び出し側で1回だけ行う。
+ * ここは表示用のデータを置くだけなので、結果画面を何度開いても
+ * ステータスの進行が二重に進むことはない。
+ */
+export function finishMockExam(session: MockExamSession, growth?: MockExamGrowth): StoredMockExamResult {
+  const finished: MockExamSession = { ...session, isFinished: true };
+  const stored: StoredMockExamResult = { session: finished, result: scoreMockExam(finished), growth };
+  if (typeof window !== "undefined") {
+    localStorage.setItem(MOCK_RESULT_KEY, JSON.stringify(stored));
+    // 受験中のセッションは終了したので消す（「再開する」を出さないため）
+    localStorage.removeItem(MOCK_EXAM_KEY);
+  }
+  return stored;
+}
+
+export function loadMockExamResult(): StoredMockExamResult | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(MOCK_RESULT_KEY);
+    if (raw) {
+      const stored = JSON.parse(raw) as StoredMockExamResult;
+      if (stored?.session?.questions?.length && stored.result) return stored;
+    }
+    // 旧バージョン互換：結果キーが無く、終了済みセッションだけが残っている場合
+    const legacy = localStorage.getItem(MOCK_EXAM_KEY);
+    if (legacy) {
+      const session = JSON.parse(legacy) as MockExamSession;
+      if (session?.isFinished && session.questions?.length) {
+        return { session, result: scoreMockExam(session) };
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/** レベルアップ演出を出し終えた印をつける（表示用のデータだけを書き換える） */
+export function markMockExamGrowthCelebrated(): void {
+  if (typeof window === "undefined") return;
+  const stored = loadMockExamResult();
+  if (!stored?.growth) return;
+  const next: StoredMockExamResult = { ...stored, growth: { ...stored.growth, celebrated: true } };
+  localStorage.setItem(MOCK_RESULT_KEY, JSON.stringify(next));
+}
+
+export function hasMockExamResult(): boolean {
+  return loadMockExamResult() !== null;
+}
+
 // ===== 永続化 =====
 export function saveMockExamSession(session: MockExamSession): void {
   if (typeof window === "undefined") return;
@@ -182,7 +260,3 @@ export function loadMockExamSession(): MockExamSession | null {
   }
 }
 
-export function clearMockExamSession(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(MOCK_EXAM_KEY);
-}
